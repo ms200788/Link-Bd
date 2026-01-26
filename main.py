@@ -227,21 +227,21 @@ async def ad_page(slug: str, request: Request, db=Depends(get_db)):
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>AI Essay with Ads</title>
 <style>
-body {
+body {{
     background: #0f2027;
     color: #fff;
     font-family: system-ui;
     margin: 0;
     padding: 0;
-}
-.card {
+}}
+.card {{
     background: #fff;
     color: #000;
     border-radius: 16px;
     padding: 16px;
     margin: 16px;
-}
-.btn {
+}}
+.btn {{
     background: #ff4b2b;
     color: #fff;
     border: none;
@@ -250,29 +250,29 @@ body {
     border-radius: 30px;
     cursor: pointer;
     font-size: 16px;
-}
-.ad-container {
+}}
+.ad-container {{
     text-align: center;
     margin: 20px 0;
-}
-h2 {
+}}
+h2, h3 {{
     color: #ff4b2b;
-}
-li {
+}}
+li {{
     margin: 8px 0;
-}
+}}
 </style>
 <script>
 let t = 15;
-let i = setInterval(() => {
+let i = setInterval(() => {{
   document.getElementById("t").innerText = t;
-  if(t <= 0){
+  if(t <= 0){{
     clearInterval(i);
     document.getElementById("msg").innerText = "Scroll down and click Continue";
     document.getElementById("c").style.display="block";
-  }
+  }}
   t--;
-}, 1000);
+}}, 1000);
 </script>
 </head>
 <body>
@@ -282,19 +282,6 @@ let i = setInterval(() => {
     <h3>Sponsored Video</h3>
     <iframe width="100%" height="200" src="https://www.youtube.com/embed/dQw4w9WgXcQ" 
         title="Ad Video" frameborder="0" allowfullscreen></iframe>
-</div>
-
-<!-- Countdown Card -->
-<div class="card">
-    <h3>Sponsored</h3>
-    <p id="msg">Please wait <b id="t">15</b> seconds we are loading your content</p>
-</div>
-
-<!-- Continue Button -->
-<div class="card" id="c" style="display:none">
-    <a href="{BASE_URL}/redirect/{slug}">
-        <button class="btn">Continue</button>
-    </a>
 </div>
 
 <!-- AI Essay Card -->
@@ -338,6 +325,16 @@ let i = setInterval(() => {
         <script type="text/javascript" src="https://adsterra.com/your-ad-code3.js"></script>
     </div>
 
+</div>
+
+<!-- Countdown Card & Continue Button -->
+<div class="card">
+    <p id="msg">Please wait <b id="t">15</b> seconds we are loading your content</p>
+    <div id="c" style="display:none; margin-top:16px;">
+        <a href="{BASE_URL}/redirect/{slug}">
+            <button class="btn">Continue</button>
+        </a>
+    </div>
 </div>
 
 </body>
