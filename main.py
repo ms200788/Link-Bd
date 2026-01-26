@@ -179,7 +179,11 @@ async def admin_create(
     db.add(link)
     db.commit()
     LINK_CACHE[slug] = link
-    return {"created": True, "short": f"/go/{slug}"}
+    full_url = f"https://fast-link-2cmx.onrender.com/go/{slug}"
+return {
+    "created": True,
+    "short_url": full_url
+}
 
 # ================= PUBLIC AD PAGE =================
 @app.get("/go/{slug}", response_class=HTMLResponse)
