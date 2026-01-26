@@ -16,8 +16,6 @@ BASE_URL = "https://fast-link-2cmx.onrender.com"
 # ================= DB SETUP =================
 engine = create_engine(
     DATABASE_URL,
-    pool_size=10,
-    max_overflow=20,
     pool_pre_ping=True,
     future=True
 )
@@ -39,8 +37,6 @@ Base.metadata.create_all(bind=engine)
 # ================= APP =================
 app = FastAPI()
 
-# ================= CACHE =================
-LINK_CACHE = {}
 REQUEST_LOG = {}
 
 # ================= HELPERS =================
@@ -121,37 +117,40 @@ async def admin_create(
     db.add(link)
     db.commit()
 
-    LINK_CACHE[slug] = target
     full_url = f"{BASE_URL}/go/{slug}"
 
-    return f"""
+    HTML = """
 <!DOCTYPE html>
 <html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <style>
-body{{background:#0f2027;color:#fff;font-family:system-ui}}
-.card{{background:#fff;color:#000;border-radius:16px;padding:16px;margin:16px}}
-button{{background:#4caf50;color:#fff;border:none;padding:14px;width:100%;border-radius:30px}}
-input{{width:100%;padding:12px}}
+body{background:#0f2027;color:#fff;font-family:system-ui}
+.card{background:#fff;color:#000;border-radius:16px;padding:16px;margin:16px}
+button{background:#4caf50;color:#fff;border:none;padding:14px;width:100%;border-radius:30px}
+input{width:100%;padding:12px}
 </style>
 <script>
-function copyLink(){{
+function copyLink(){
   let i=document.getElementById("l");
-  i.select();document.execCommand("copy");
+  i.select();
+  document.execCommand("copy");
   alert("Copied");
-}}
+}
 </script>
 </head>
 <body>
+
 <div class="card">
 <h3>Link Created</h3>
-<input id="l" value="{full_url}" readonly>
+<input id="l" value="{url}" readonly>
 <button onclick="copyLink()">Copy Link</button>
 </div>
+
 </body>
 </html>
 """
+    return HTML.format(url=full_url)
 
 # ================= AD PAGE =================
 @app.get("/go/{slug}", response_class=HTMLResponse)
@@ -169,26 +168,26 @@ async def ad_page(slug: str, request: Request, db=Depends(get_db)):
     link.clicks += 1
     db.commit()
 
-    return f"""
+    HTML = """
 <!DOCTYPE html>
 <html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <style>
-body{{background:#0f2027;color:#fff;font-family:system-ui}}
-.card{{background:#fff;color:#000;border-radius:16px;padding:16px;margin:16px}}
-.btn{{background:#ff4b2b;color:#fff;border:none;padding:14px;width:100%;border-radius:30px}}
-a{{text-decoration:none;user-select:none;-webkit-user-select:none}}
+body{background:#0f2027;color:#fff;font-family:system-ui}
+.card{background:#fff;color:#000;border-radius:16px;padding:16px;margin:16px}
+.btn{background:#ff4b2b;color:#fff;border:none;padding:14px;width:100%;border-radius:30px}
+a{text-decoration:none}
 </style>
 <script>
 let t=10;
 let i=setInterval(()=>{
   document.getElementById("t").innerText=t;
-  if(t<=0){{
+  if(t<=0){
     clearInterval(i);
     document.getElementById("c").style.display="block";
     document.getElementById("t").innerText=0;
-  }}
+  }
   t--;
 },1000);
 </script>
@@ -198,6 +197,7 @@ let i=setInterval(()=>{
 <div class="card">
 <h3>Sponsored</h3>
 <p>Please wait <b id="t">10</b> seconds</p>
+<!-- AD PLACE HERE -->
 </div>
 
 <div class="card" id="c" style="display:none">
@@ -209,6 +209,7 @@ let i=setInterval(()=>{
 </body>
 </html>
 """
+    return HTML.format(slug=slug)
 
 # ================= REDIRECT =================
 @app.get("/redirect/{slug}")
