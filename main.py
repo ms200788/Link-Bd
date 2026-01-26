@@ -420,6 +420,17 @@ those involving repetitive tasks. However, AI also creates new opportunities and
 require advanced skills and human creativity.
 </p>
 
+<script>
+  atOptions = {
+    'key' : 'a3a53ccd363dfab580fb6f222586ae7b',
+    'format' : 'iframe',
+    'height' : 250,
+    'width' : 300,
+    'params' : {}
+  };
+</script>
+<script src="https://www.highperformanceformat.com/a3a53ccd363dfab580fb6f222586ae7b/invoke.js"></script>
+
 <h2>7. The Role of AI in Education</h2>
 
 <p>
