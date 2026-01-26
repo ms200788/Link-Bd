@@ -65,14 +65,107 @@ async def home():
 @app.get("/admin", response_class=HTMLResponse)
 async def admin_page():
     return """
-    <h2>Admin Panel</h2>
-    <form method="post">
-      Password:<br><input type="password" name="password"><br><br>
-      Short Code:<br><input name="slug"><br><br>
-      Target Link:<br><input name="target"><br><br>
-      <button>Create</button>
-    </form>
-    """
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Admin Panel</title>
+
+<style>
+body {
+    margin: 0;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto;
+    background: linear-gradient(135deg, #141e30, #243b55);
+    color: #fff;
+}
+
+.container {
+    max-width: 420px;
+    margin: auto;
+    padding: 20px;
+}
+
+.card {
+    background: #ffffff;
+    color: #333;
+    border-radius: 14px;
+    padding: 18px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+}
+
+h2 {
+    text-align: center;
+    margin-top: 0;
+}
+
+label {
+    font-size: 14px;
+    font-weight: 600;
+}
+
+input {
+    width: 100%;
+    padding: 12px;
+    margin-top: 6px;
+    margin-bottom: 14px;
+    border-radius: 10px;
+    border: 1px solid #ccc;
+    font-size: 15px;
+}
+
+button {
+    width: 100%;
+    padding: 14px;
+    background: linear-gradient(135deg, #ff512f, #dd2476);
+    color: white;
+    border: none;
+    border-radius: 30px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+button:active {
+    transform: scale(0.97);
+}
+
+.note {
+    font-size: 13px;
+    color: #777;
+    text-align: center;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+    <div class="card">
+        <h2>Admin Panel</h2>
+
+        <form method="post">
+            <label>Admin Password</label>
+            <input type="text" name="password" placeholder="Enter admin password">
+
+            <label>Short Code (slug)</label>
+            <input name="slug" placeholder="example: ai-news">
+
+            <label>Target Content URL</label>
+            <input name="target" placeholder="https://example.com">
+
+            <button>Create Short Link</button>
+        </form>
+
+        <p class="note">
+            Tip: use short & clean slugs like <b>movie1</b>, <b>ai2026</b>
+        </p>
+    </div>
+</div>
+
+</body>
+</html>
+"""
 
 @app.post("/admin")
 async def admin_create(
