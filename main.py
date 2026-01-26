@@ -261,7 +261,7 @@ p {{
 </style>
 
 <script>
-let t = 15;
+let t = 20;
 let timer = setInterval(() => {{
     document.getElementById("t").innerText = t;
     if (t <= 0) {{
