@@ -177,10 +177,12 @@ fairness, and accountability must guide future AI development.
 # ================= FINAL REDIRECT =================
 @app.get("/redirect/{slug}")
 async def final_redirect(slug: str, db=Depends(get_db)):
-    link = LINK_CACHE.get(slug)
-    if not link:
+    target = LINK_CACHE.get(slug)
+    if not target:
         link = db.query(Link).filter(Link.slug == slug).first()
         if not link:
             return RedirectResponse("/")
-        LINK_CACHE[slug] = link
-    return RedirectResponse(link.target)
+        target = link.target
+        LINK_CACHE[slug] = target
+
+    return RedirectResponse(target)
