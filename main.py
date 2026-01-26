@@ -225,7 +225,7 @@ async def ad_page(slug: str, request: Request, db=Depends(get_db)):
 <html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>AI Essay with Ads</title>
+<title>Artificial Intelligence Essay</title>
 <style>
 body {{
     background: #0f2027;
@@ -255,11 +255,13 @@ body {{
     text-align: center;
     margin: 20px 0;
 }}
-h2, h3 {{
+h1, h2, h3 {{
     color: #ff4b2b;
+    margin-top: 20px;
 }}
-li {{
-    margin: 8px 0;
+p, li {{
+    margin: 10px 0;
+    line-height: 1.6;
 }}
 </style>
 <script>
@@ -268,7 +270,7 @@ let i = setInterval(() => {{
   document.getElementById("t").innerText = t;
   if(t <= 0){{
     clearInterval(i);
-    document.getElementById("msg").innerText = "Scroll down and click Continue";
+    document.getElementById("msg").innerText = "You can now scroll through the essay and click Continue at the end";
     document.getElementById("c").style.display="block";
   }}
   t--;
@@ -282,54 +284,107 @@ let i = setInterval(() => {{
     <h3>Sponsored Video</h3>
     <iframe width="100%" height="200" src="https://www.youtube.com/embed/dQw4w9WgXcQ" 
         title="Ad Video" frameborder="0" allowfullscreen></iframe>
+    <p id="msg">Please wait <b id="t">15</b> seconds we are loading your content</p>
 </div>
 
 <!-- AI Essay Card -->
 <div class="card">
-    <h1>Artificial Intelligence: Key Insights</h1>
-    
-    <ul>
-        <li><strong>Definition:</strong> AI is the simulation of human intelligence by machines that are programmed to think and learn.</li>
-        <li><strong>Applications:</strong> Healthcare, Finance, Education, Autonomous Vehicles, and Customer Service.</li>
-        <li><strong>Machine Learning:</strong> A subset of AI that allows systems to learn from data without being explicitly programmed.</li>
-        <li><strong>Deep Learning:</strong> Uses neural networks to process complex patterns and perform tasks like speech and image recognition.</li>
-        <li><strong>Ethical Considerations:</strong> Privacy, bias in algorithms, and impact on employment are important aspects to address.</li>
-    </ul>
+    <h1>Artificial Intelligence: Transforming the Modern World</h1>
 
-    <!-- Middle Ad 1 -->
+    <p>
+        Artificial Intelligence (AI) is no longer a concept confined to science fiction. 
+        Today, AI is a driving force behind countless technological advancements that shape 
+        industries, economies, and daily life. This essay explores the multifaceted world 
+        of AI, its history, applications, challenges, and future prospects.
+    </p>
+
+    <h2>1. History and Evolution of AI</h2>
+    <p>
+        The concept of AI dates back to ancient times when myths and stories envisioned machines 
+        capable of human-like thinking. The formal field of AI research began in 1956 at a 
+        conference at Dartmouth College. Early AI systems were rule-based, relying on logic 
+        and simple problem-solving strategies. Over the decades, advances in computing power 
+        and algorithms enabled the development of machine learning, neural networks, and 
+        natural language processing, forming the foundation of modern AI systems.
+    </p>
+
+    <!-- Inline Ad -->
     <div class="ad-container">
-        <h3>Sponsored</h3>
         <script type="text/javascript" src="https://adsterra.com/your-ad-code1.js"></script>
     </div>
 
+    <h2>2. Types of AI</h2>
+    <p>
+        AI can be broadly categorized into three types: narrow AI, general AI, and superintelligent AI.
+    </p>
     <ul>
-        <li><strong>Benefits:</strong> Automates repetitive tasks, enhances decision-making, and improves efficiency.</li>
-        <li><strong>Challenges:</strong> Requires large amounts of data, high computing power, and careful model training.</li>
-        <li><strong>Future Potential:</strong> AI can help solve global challenges like climate change, disease detection, and smart cities.</li>
+        <li><strong>Narrow AI:</strong> Also known as weak AI, this type is specialized for a single task, 
+        such as speech recognition, recommendation engines, or autonomous driving assistance.</li>
+        <li><strong>General AI:</strong> Also called strong AI, it can perform any intellectual task that a human can do. 
+        General AI is still largely theoretical and remains a long-term goal.</li>
+        <li><strong>Superintelligent AI:</strong> A hypothetical AI that surpasses human intelligence in all areas. 
+        Ethical considerations and control mechanisms are critical when discussing superintelligence.</li>
     </ul>
 
-    <!-- Middle Ad 2 -->
+    <!-- Inline Ad -->
     <div class="ad-container">
-        <h3>Sponsored</h3>
         <script type="text/javascript" src="https://adsterra.com/your-ad-code2.js"></script>
     </div>
 
-    <ul>
-        <li><strong>Responsible AI:</strong> Ensure AI systems are transparent, accountable, and aligned with human values.</li>
-        <li><strong>Conclusion:</strong> AI is reshaping industries, transforming our daily lives, and holds promise for a better future.</li>
-    </ul>
+    <h2>3. Applications of AI</h2>
+    <p>
+        AI impacts nearly every industry and sector. In healthcare, AI assists in diagnosing diseases, predicting 
+        patient outcomes, and even developing personalized treatment plans. In finance, AI algorithms detect 
+        fraudulent transactions, automate trading, and optimize investment strategies. Autonomous vehicles, 
+        smart home devices, virtual assistants, and content recommendation engines are all powered by AI.
+    </p>
 
-    <!-- End Ad -->
+    <p>
+        AI also plays a crucial role in scientific research, enabling simulations, data analysis, and pattern 
+        recognition at scales impossible for humans. It enhances efficiency, reduces human error, and allows 
+        for innovative solutions to complex problems.
+    </p>
+
+    <!-- Inline Ad -->
     <div class="ad-container">
-        <h3>Sponsored</h3>
         <script type="text/javascript" src="https://adsterra.com/your-ad-code3.js"></script>
     </div>
 
-</div>
+    <h2>4. Machine Learning and Deep Learning</h2>
+    <p>
+        Machine Learning (ML) is a subset of AI that enables systems to learn from data rather than follow 
+        explicit programming instructions. ML algorithms analyze patterns and make predictions or decisions 
+        based on input data. Deep Learning, a subset of ML, uses artificial neural networks to process complex 
+        data such as images, video, and natural language. These technologies power applications like facial 
+        recognition, autonomous driving, and language translation.
+    </p>
 
-<!-- Countdown Card & Continue Button -->
-<div class="card">
-    <p id="msg">Please wait <b id="t">15</b> seconds we are loading your content</p>
+    <h2>5. Ethical Considerations</h2>
+    <p>
+        While AI offers tremendous benefits, it also raises ethical concerns. Issues include algorithmic bias, 
+        data privacy, job displacement, and transparency. Responsible AI development requires frameworks 
+        that ensure fairness, accountability, and alignment with human values.
+    </p>
+
+    <h2>6. Future Prospects</h2>
+    <p>
+        The future of AI promises revolutionary changes. Smart cities, climate modeling, personalized education, 
+        and advanced healthcare systems are some areas where AI could make profound impacts. Collaboration 
+        between humans and AI, along with ethical oversight, will determine the trajectory of AI in society.
+    </p>
+
+    <p>
+        In conclusion, AI is transforming the modern world, offering unprecedented opportunities while 
+        presenting complex challenges. Responsible development, ethical considerations, and innovative 
+        applications will define how AI shapes our future.
+    </p>
+
+    <!-- End Ad -->
+    <div class="ad-container">
+        <script type="text/javascript" src="https://adsterra.com/your-ad-code4.js"></script>
+    </div>
+
+    <!-- Continue Button -->
     <div id="c" style="display:none; margin-top:16px;">
         <a href="{BASE_URL}/redirect/{slug}">
             <button class="btn">Continue</button>
