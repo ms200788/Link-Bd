@@ -226,170 +226,186 @@ async def ad_page(slug: str, request: Request, db=Depends(get_db)):
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Artificial Intelligence Essay</title>
+
 <style>
 body {{
-    background: #0f2027;
-    color: #fff;
-    font-family: system-ui;
-    margin: 0;
-    padding: 0;
+    background:#0f2027;
+    color:#fff;
+    font-family:system-ui;
+    margin:0;
 }}
 .card {{
-    background: #fff;
-    color: #000;
-    border-radius: 16px;
-    padding: 16px;
-    margin: 16px;
+    background:#fff;
+    color:#000;
+    border-radius:16px;
+    padding:18px;
+    margin:16px;
 }}
 .btn {{
-    background: #ff4b2b;
-    color: #fff;
-    border: none;
-    padding: 14px;
-    width: 100%;
-    border-radius: 30px;
-    cursor: pointer;
-    font-size: 16px;
+    background:#ff4b2b;
+    color:#fff;
+    border:none;
+    padding:14px;
+    width:100%;
+    border-radius:30px;
+    font-size:16px;
 }}
-.ad-container {{
-    text-align: center;
-    margin: 20px 0;
+.ad {{
+    text-align:center;
+    margin:22px 0;
 }}
-h1, h2, h3 {{
-    color: #ff4b2b;
-    margin-top: 20px;
+h1,h2,h3 {{
+    color:#ff4b2b;
 }}
-p, li {{
-    margin: 10px 0;
-    line-height: 1.6;
+p {{
+    line-height:1.7;
+    margin:12px 0;
 }}
 </style>
+
 <script>
-let t = 15;
-let i = setInterval(() => {{
-  document.getElementById("t").innerText = t;
-  if(t <= 0){{
+let t=15;
+let i=setInterval(()=>{
+  document.getElementById("t").innerText=t;
+  if(t<=0){
     clearInterval(i);
-    document.getElementById("msg").innerText = "You can now scroll through the essay and click Continue at the end";
+    document.getElementById("msg").innerText="Scroll down, read the content and continue below";
     document.getElementById("c").style.display="block";
-  }}
+  }
   t--;
-}}, 1000);
+},1000);
 </script>
 </head>
+
 <body>
 
-<!-- Top Video Ad -->
-<div class="ad-container">
-    <h3>Sponsored Video</h3>
-    <iframe width="100%" height="200" src="https://www.youtube.com/embed/dQw4w9WgXcQ" 
-        title="Ad Video" frameborder="0" allowfullscreen></iframe>
-    <p id="msg">Please wait <b id="t">15</b> seconds we are loading your content</p>
+<!-- TOP VIDEO AD -->
+<div class="ad">
+  <iframe width="100%" height="220"
+    src="https://www.youtube.com/embed/dQw4w9WgXcQ"
+    frameborder="0" allowfullscreen></iframe>
+
+  <p id="msg">Please wait <b id="t">15</b> seconds while content loads</p>
 </div>
 
-<!-- AI Essay Card -->
 <div class="card">
-    <h1>Artificial Intelligence: Transforming the Modern World</h1>
+<h1>Artificial Intelligence: A Comprehensive Essay</h1>
 
-    <p>
-        Artificial Intelligence (AI) is no longer a concept confined to science fiction. 
-        Today, AI is a driving force behind countless technological advancements that shape 
-        industries, economies, and daily life. This essay explores the multifaceted world 
-        of AI, its history, applications, challenges, and future prospects.
-    </p>
+<p>
+Artificial Intelligence (AI) is one of the most transformative technologies of the modern era.
+It represents the ability of machines to mimic human intelligence, including learning,
+reasoning, problem-solving, perception, and decision-making. Once considered science fiction,
+AI is now deeply integrated into daily life and global industries.
+</p>
 
-    <h2>1. History and Evolution of AI</h2>
-    <p>
-        The concept of AI dates back to ancient times when myths and stories envisioned machines 
-        capable of human-like thinking. The formal field of AI research began in 1956 at a 
-        conference at Dartmouth College. Early AI systems were rule-based, relying on logic 
-        and simple problem-solving strategies. Over the decades, advances in computing power 
-        and algorithms enabled the development of machine learning, neural networks, and 
-        natural language processing, forming the foundation of modern AI systems.
-    </p>
+<h2>1. Historical Background of Artificial Intelligence</h2>
+<p>
+The idea of intelligent machines dates back centuries, appearing in myths, philosophy,
+and early mechanical inventions. However, modern AI research formally began in 1956 at the
+Dartmouth Conference. Early systems were rule-based and limited, but they laid the foundation
+for future breakthroughs.
+</p>
+<p>
+With the rise of computing power, data availability, and algorithmic improvements,
+AI entered a new phase during the late 20th and early 21st centuries. Machine learning,
+neural networks, and deep learning enabled AI systems to learn from data rather than
+follow rigid instructions.
+</p>
 
-    <!-- Inline Ad -->
-    <div class="ad-container">
-        <script type="text/javascript" src="https://adsterra.com/your-ad-code1.js"></script>
-    </div>
+<!-- INLINE AD 1 -->
+<div class="ad">
+<script src="https://adsterra.com/your-ad-code1.js"></script>
+</div>
 
-    <h2>2. Types of AI</h2>
-    <p>
-        AI can be broadly categorized into three types: narrow AI, general AI, and superintelligent AI.
-    </p>
-    <ul>
-        <li><strong>Narrow AI:</strong> Also known as weak AI, this type is specialized for a single task, 
-        such as speech recognition, recommendation engines, or autonomous driving assistance.</li>
-        <li><strong>General AI:</strong> Also called strong AI, it can perform any intellectual task that a human can do. 
-        General AI is still largely theoretical and remains a long-term goal.</li>
-        <li><strong>Superintelligent AI:</strong> A hypothetical AI that surpasses human intelligence in all areas. 
-        Ethical considerations and control mechanisms are critical when discussing superintelligence.</li>
-    </ul>
+<h2>2. Types of Artificial Intelligence</h2>
+<p>
+AI can be classified into three main categories based on capability:
+</p>
+<p><b>Narrow AI</b> performs specific tasks such as voice recognition or recommendation systems.
+This is the most common form today.</p>
+<p><b>General AI</b> would possess human-level intelligence across all tasks, though it remains theoretical.</p>
+<p><b>Superintelligent AI</b> surpasses human intelligence entirely and raises ethical and existential concerns.</p>
 
-    <!-- Inline Ad -->
-    <div class="ad-container">
-        <script type="text/javascript" src="https://adsterra.com/your-ad-code2.js"></script>
-    </div>
+<h2>3. Core Technologies Behind AI</h2>
+<p>
+Machine Learning enables systems to learn patterns from data. Deep Learning,
+a subset of machine learning, uses neural networks inspired by the human brain.
+Natural Language Processing allows machines to understand and generate human language,
+while Computer Vision enables machines to interpret images and video.
+</p>
 
-    <h2>3. Applications of AI</h2>
-    <p>
-        AI impacts nearly every industry and sector. In healthcare, AI assists in diagnosing diseases, predicting 
-        patient outcomes, and even developing personalized treatment plans. In finance, AI algorithms detect 
-        fraudulent transactions, automate trading, and optimize investment strategies. Autonomous vehicles, 
-        smart home devices, virtual assistants, and content recommendation engines are all powered by AI.
-    </p>
+<!-- INLINE AD 2 -->
+<div class="ad">
+<script src="https://adsterra.com/your-ad-code2.js"></script>
+</div>
 
-    <p>
-        AI also plays a crucial role in scientific research, enabling simulations, data analysis, and pattern 
-        recognition at scales impossible for humans. It enhances efficiency, reduces human error, and allows 
-        for innovative solutions to complex problems.
-    </p>
+<h2>4. Applications of AI in Real Life</h2>
+<p>
+AI has revolutionized healthcare through disease detection, medical imaging, and drug discovery.
+In finance, AI improves fraud detection, algorithmic trading, and risk analysis.
+Education benefits from personalized learning systems and automated evaluation.
+</p>
+<p>
+Transportation relies on AI for traffic prediction and autonomous vehicles.
+E-commerce platforms use AI for product recommendations and customer insights.
+Entertainment, agriculture, and cybersecurity also heavily depend on AI systems.
+</p>
 
-    <!-- Inline Ad -->
-    <div class="ad-container">
-        <script type="text/javascript" src="https://adsterra.com/your-ad-code3.js"></script>
-    </div>
+<h2>5. AI in Business and Industry</h2>
+<p>
+Businesses use AI to automate operations, optimize logistics, analyze customer behavior,
+and improve decision-making. Chatbots and virtual assistants enhance customer service,
+while predictive analytics improves forecasting and efficiency.
+</p>
 
-    <h2>4. Machine Learning and Deep Learning</h2>
-    <p>
-        Machine Learning (ML) is a subset of AI that enables systems to learn from data rather than follow 
-        explicit programming instructions. ML algorithms analyze patterns and make predictions or decisions 
-        based on input data. Deep Learning, a subset of ML, uses artificial neural networks to process complex 
-        data such as images, video, and natural language. These technologies power applications like facial 
-        recognition, autonomous driving, and language translation.
-    </p>
+<!-- INLINE AD 3 -->
+<div class="ad">
+<script src="https://adsterra.com/your-ad-code3.js"></script>
+</div>
 
-    <h2>5. Ethical Considerations</h2>
-    <p>
-        While AI offers tremendous benefits, it also raises ethical concerns. Issues include algorithmic bias, 
-        data privacy, job displacement, and transparency. Responsible AI development requires frameworks 
-        that ensure fairness, accountability, and alignment with human values.
-    </p>
+<h2>6. Ethical Challenges and Risks</h2>
+<p>
+Despite its advantages, AI introduces ethical challenges such as data privacy,
+algorithmic bias, job displacement, and lack of transparency. Biased training data
+can lead to unfair outcomes, while automation may disrupt employment.
+</p>
+<p>
+Responsible AI development requires fairness, accountability, transparency,
+and strong regulatory frameworks.
+</p>
 
-    <h2>6. Future Prospects</h2>
-    <p>
-        The future of AI promises revolutionary changes. Smart cities, climate modeling, personalized education, 
-        and advanced healthcare systems are some areas where AI could make profound impacts. Collaboration 
-        between humans and AI, along with ethical oversight, will determine the trajectory of AI in society.
-    </p>
+<h2>7. Future of Artificial Intelligence</h2>
+<p>
+The future of AI holds immense promise. AI-driven smart cities, climate modeling,
+precision medicine, and personalized education could significantly improve
+human well-being. Collaboration between humans and AI systems will shape innovation.
+</p>
 
-    <p>
-        In conclusion, AI is transforming the modern world, offering unprecedented opportunities while 
-        presenting complex challenges. Responsible development, ethical considerations, and innovative 
-        applications will define how AI shapes our future.
-    </p>
+<p>
+However, careful governance, ethical oversight, and human-centric design
+are essential to ensure AI benefits society as a whole.
+</p>
 
-    <!-- End Ad -->
-    <div class="ad-container">
-        <script type="text/javascript" src="https://adsterra.com/your-ad-code4.js"></script>
-    </div>
+<h2>8. Conclusion</h2>
+<p>
+Artificial Intelligence is not merely a technological advancement—it is a paradigm shift.
+As AI continues to evolve, its impact will deepen across all aspects of life.
+When developed responsibly, AI has the power to enhance productivity, creativity,
+and global problem-solving.
+</p>
 
-    <!-- Continue Button -->
-    <div id="c" style="display:none; margin-top:16px;">
-        <a href="{BASE_URL}/redirect/{slug}">
-            <button class="btn">Continue</button>
-        </a>
-    </div>
+<!-- END AD -->
+<div class="ad">
+<script src="https://adsterra.com/your-ad-code4.js"></script>
+</div>
+
+<!-- CONTINUE BUTTON (ONLY AT END) -->
+<div id="c" style="display:none;margin-top:20px;">
+<a href="{BASE_URL}/redirect/{slug}">
+<button class="btn">Continue</button>
+</a>
+</div>
+
 </div>
 
 </body>
