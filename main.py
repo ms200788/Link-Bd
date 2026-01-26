@@ -32,7 +32,7 @@ Base.metadata.create_all(bind=engine)
 # ================= APP =================
 app = FastAPI()
 
-# ================= IN-MEMORY CACHE =================
+# ================= CACHE =================
 LINK_CACHE = {}
 REQUEST_LOG = {}
 
@@ -48,7 +48,7 @@ def check_admin(password: str):
     if password != ADMIN_PASSWORD:
         raise HTTPException(status_code=403, detail="Forbidden")
 
-# ================= HEALTH (for UptimeRobot) =================
+# ================= HEALTH =================
 @app.get("/health")
 async def health():
     return {"status": "alive"}
@@ -56,10 +56,7 @@ async def health():
 # ================= HOME =================
 @app.get("/", response_class=HTMLResponse)
 async def home():
-    return """
-    <h1>Content Gateway</h1>
-    <p>This site provides gated access to content.</p>
-    """
+    return "<h2>Fast Link Gateway</h2>"
 
 # ================= ADMIN =================
 @app.get("/admin", response_class=HTMLResponse)
@@ -68,101 +65,24 @@ async def admin_page():
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>Admin Panel</title>
-
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <style>
-body {
-    margin: 0;
-    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto;
-    background: linear-gradient(135deg, #141e30, #243b55);
-    color: #fff;
-}
-
-.container {
-    max-width: 420px;
-    margin: auto;
-    padding: 20px;
-}
-
-.card {
-    background: #ffffff;
-    color: #333;
-    border-radius: 14px;
-    padding: 18px;
-    box-shadow: 0 8px 20px rgba(0,0,0,0.25);
-}
-
-h2 {
-    text-align: center;
-    margin-top: 0;
-}
-
-label {
-    font-size: 14px;
-    font-weight: 600;
-}
-
-input {
-    width: 100%;
-    padding: 12px;
-    margin-top: 6px;
-    margin-bottom: 14px;
-    border-radius: 10px;
-    border: 1px solid #ccc;
-    font-size: 15px;
-}
-
-button {
-    width: 100%;
-    padding: 14px;
-    background: linear-gradient(135deg, #ff512f, #dd2476);
-    color: white;
-    border: none;
-    border-radius: 30px;
-    font-size: 16px;
-    cursor: pointer;
-}
-
-button:active {
-    transform: scale(0.97);
-}
-
-.note {
-    font-size: 13px;
-    color: #777;
-    text-align: center;
-}
+body{font-family:system-ui;background:#141e30;color:#fff}
+.card{background:#fff;color:#000;border-radius:16px;padding:18px;margin:20px auto;max-width:420px}
+input,button{width:100%;padding:12px;margin:8px 0;border-radius:10px}
+button{background:#ff416c;color:#fff;border:none;font-size:16px}
 </style>
 </head>
-
 <body>
-
-<div class="container">
-    <div class="card">
-        <h2>Admin Panel</h2>
-
-        <form method="post">
-            <label>Admin Password</label>
-            <input type="text" name="password" placeholder="Enter admin password">
-
-            <label>Short Code (slug)</label>
-            <input name="slug" placeholder="example: ai-news">
-
-            <label>Target Content URL</label>
-            <input name="target" placeholder="https://example.com">
-
-            <button>Create Short Link</button>
-        </form>
-
-        <p class="note">
-            Tip: use short & clean slugs like <b>movie1</b>, <b>ai2026</b>
-        </p>
-    </div>
+<div class="card">
+<h2>Admin Panel</h2>
+<form method="post">
+<input name="password" placeholder="Admin password">
+<input name="slug" placeholder="Short code (movie1)">
+<input name="target" placeholder="Target URL">
+<button>Create Link</button>
+</form>
 </div>
-
 </body>
 </html>
 """
@@ -180,195 +100,63 @@ async def admin_create(
     db.add(link)
     db.commit()
 
-    LINK_CACHE[slug] = link
-
-    full_url = f"https://fast-link-2cmx.onrender.com/go/{slug}"
+    LINK_CACHE[slug] = target
 
     return {
         "created": True,
-        "short_url": full_url
+        "short_url": f"https://fast-link-2cmx.onrender.com/go/{slug}"
     }
 
-# ================= PUBLIC AD PAGE =================
+# ================= AD PAGE =================
 @app.get("/go/{slug}", response_class=HTMLResponse)
 async def ad_page(slug: str, request: Request, db=Depends(get_db)):
-    # --- Basic rate limiting ---
     ip = request.client.host
     now = time.time()
-    last = REQUEST_LOG.get(ip, 0)
-    if now - last < 1:
-        raise HTTPException(status_code=429, detail="Too many requests")
+    if now - REQUEST_LOG.get(ip, 0) < 1:
+        raise HTTPException(status_code=429)
     REQUEST_LOG[ip] = now
 
-    # --- Cache first ---
     target = LINK_CACHE.get(slug)
-if not target:
-    link = db.query(Link).filter(Link.slug == slug).first()
-    if not link:
-        return "Invalid link"
-    target = link.target
-    LINK_CACHE[slug] = target
+    if not target:
+        link = db.query(Link).filter(Link.slug == slug).first()
+        if not link:
+            return "Invalid link"
+        target = link.target
+        LINK_CACHE[slug] = target
 
     return f"""
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>Please wait</title>
-
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <style>
-body {{
-    margin: 0;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
-    color: #fff;
-}}
-
-.container {{
-    max-width: 420px;
-    margin: auto;
-    padding: 16px;
-}}
-
-.card {{
-    background: #ffffff;
-    color: #333;
-    border-radius: 14px;
-    padding: 16px;
-    margin-bottom: 16px;
-    box-shadow: 0 8px 20px rgba(0,0,0,0.2);
-}}
-
-h2, h3 {{
-    margin-top: 0;
-}}
-
-.timer {{
-    font-size: 28px;
-    font-weight: bold;
-    color: #ff5722;
-    text-align: center;
-}}
-
-.notice {{
-    text-align: center;
-    font-size: 14px;
-    color: #555;
-}}
-
-.ad-box {{
-    background: #f2f2f2;
-    border-radius: 10px;
-    padding: 10px;
-    text-align: center;
-    margin: 10px 0;
-}}
-
-.content p {{
-    font-size: 15px;
-    line-height: 1.6;
-}}
-
-#continue {{
-    display: none;
-    text-align: center;
-}}
-
-.btn {{
-    background: linear-gradient(135deg, #ff416c, #ff4b2b);
-    border: none;
-    border-radius: 30px;
-    padding: 14px 24px;
-    color: white;
-    font-size: 16px;
-    cursor: pointer;
-    width: 100%;
-}}
-
-.btn:active {{
-    transform: scale(0.97);
-}}
+body{{background:#0f2027;color:#fff;font-family:system-ui}}
+.card{{background:#fff;color:#000;border-radius:16px;padding:16px;margin:16px}}
+.btn{{background:#ff4b2b;color:#fff;border:none;padding:14px;width:100%;border-radius:30px}}
 </style>
-
 <script>
-let t = 10;
-function startTimer() {{
-    let timer = setInterval(() => {{
-        document.getElementById("timer").innerText = t;
-        t--;
-        if (t < 0) {{
-            clearInterval(timer);
-            document.getElementById("continue").style.display = "block";
-        }}
-    }}, 1000);
-}}
-window.onload = startTimer;
+let t=10;
+setInterval(()=>{{
+document.getElementById("t").innerText=t;
+if(t--<=0)document.getElementById("c").style.display="block";
+}},1000);
 </script>
 </head>
-
 <body>
-
-<div class="container">
-
-    <div class="card">
-        <h2>Sponsored Content</h2>
-
-        <div class="ad-box">
-            <!-- ADSTERRA BANNER CODE HERE -->
-            <b>Advertisement</b>
-        </div>
-
-        <p class="notice">
-            Please wait <span class="timer" id="timer">10</span> seconds  
-            <br>We are loading your content…
-        </p>
-    </div>
-
-    <div class="card content">
-        <h3>How AI Is Changing the World</h3>
-
-        <p>
-        Artificial Intelligence (AI) is rapidly transforming the way we live,
-        work, and interact with technology. From smart assistants and automated
-        customer support to medical diagnostics and financial forecasting, AI
-        systems are becoming deeply embedded in everyday life.
-        </p>
-
-        <p>
-        Modern AI relies heavily on machine learning, where systems learn from
-        vast amounts of data instead of being explicitly programmed. This allows
-        AI models to recognize patterns, make predictions, and continuously
-        improve over time.
-        </p>
-
-        <div class="ad-box">
-            <!-- ADSTERRA VIDEO / SOCIAL BAR -->
-            <b>Video Ad</b>
-        </div>
-
-        <p>
-        As AI adoption grows, ethical considerations such as data privacy,
-        transparency, and fairness become increasingly important. Responsible AI
-        development ensures that technology benefits society without causing harm.
-        </p>
-    </div>
-
-    <div class="card" id="continue">
-        <p style="text-align:center;"><b>Scroll down and continue</b></p>
-        <a href="/redirect/{slug}">
-            <button class="btn">Continue to Content</button>
-        </a>
-    </div>
-
+<div class="card">
+<h3>Sponsored</h3>
+<p>Wait <b id="t">10</b> seconds</p>
 </div>
-
+<div class="card" id="c" style="display:none">
+<a href="/redirect/{slug}">
+<button class="btn">Continue</button>
+</a>
+</div>
 </body>
 </html>
 """
 
-# ================= FINAL REDIRECT =================
+# ================= REDIRECT =================
 @app.get("/redirect/{slug}")
 async def final_redirect(slug: str, db=Depends(get_db)):
     target = LINK_CACHE.get(slug)
@@ -378,5 +166,4 @@ async def final_redirect(slug: str, db=Depends(get_db)):
             return RedirectResponse("/")
         target = link.target
         LINK_CACHE[slug] = target
-
     return RedirectResponse(target)
