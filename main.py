@@ -454,7 +454,8 @@ likely to augment human capabilities, enabling people to work more efficiently a
 However, the future of AI depends on responsible development, ethical governance, and global
 cooperation. Ensuring that AI benefits humanity as a whole requires thoughtful regulation,
 transparency, and public awareness.
-</p
+</p>
+
 <h2>9. Conclusion</h2>
 
 <p>
