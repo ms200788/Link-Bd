@@ -342,6 +342,7 @@ let i = setInterval(() => {
 
 </body>
 </html>
+"""
 
 # ================= FINAL REDIRECT =================
 @app.get("/redirect/{slug}")
