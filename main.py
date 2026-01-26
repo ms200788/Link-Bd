@@ -226,7 +226,7 @@ body {{
     margin:0;
 }}
 .card {{
-    background:#fff;
+    background:#ffffff;
     color:#000;
     border-radius:16px;
     padding:20px;
@@ -240,9 +240,15 @@ body {{
     width:100%;
     border-radius:30px;
     font-size:16px;
+    cursor:not-allowed;
+    opacity:0.6;
+}}
+.btn.active {{
+    cursor:pointer;
+    opacity:1;
 }}
 h1,h2,h3 {{
-    color:#ff4b2b;
+    color:#1e293b; /* dark heading */
 }}
 p {{
     line-height:1.8;
@@ -251,20 +257,48 @@ p {{
 ul {{
     margin-left:18px;
 }}
+.timer {{
+    background:#f1f5f9;
+    color:#000;
+    border-radius:12px;
+    padding:12px;
+    margin-bottom:16px;
+    font-weight:500;
+}}
 </style>
+
+<script>
+let t = 15;
+let timer = setInterval(() => {{
+    document.getElementById("t").innerText = t;
+    if (t <= 0) {{
+        clearInterval(timer);
+        document.getElementById("msg").innerText = "You may now continue";
+        const btn = document.getElementById("continueBtn");
+        btn.classList.add("active");
+        btn.disabled = false;
+        btn.style.cursor = "pointer";
+    }}
+    t--;
+}}, 1000);
+</script>
 
 </head>
 <body>
 
 <div class="card">
 
+<!-- TIMER MESSAGE -->
+<div class="timer">
+<p id="msg">Please wait <b id="t">15</b> seconds while your content loads</p>
+</div>
+
 <h1>Artificial Intelligence: Understanding the Technology That Is Reshaping Humanity</h1>
-<p><i>Estimated reading time: 10–12 minutes</i></p>
 
 <p>
 Artificial Intelligence, commonly referred to as AI, is one of the most powerful and transformative
 technologies ever created by humans. What once existed only in science fiction novels and futuristic
-movies is now deeply integrated into our daily lives. From smartphones and search engines to healthcare,
+movies is now deeply integrated into our daily lives.  From smartphones and search engines to healthcare,
 finance, transportation, and education, AI has become an invisible yet essential part of modern society.
 </p>
 
@@ -420,24 +454,21 @@ likely to augment human capabilities, enabling people to work more efficiently a
 However, the future of AI depends on responsible development, ethical governance, and global
 cooperation. Ensuring that AI benefits humanity as a whole requires thoughtful regulation,
 transparency, and public awareness.
-</p>
-
+</p
 <h2>9. Conclusion</h2>
 
 <p>
 Artificial intelligence is more than just a technological innovation; it represents a fundamental
-shift in how humans interact with machines and information. Its influence will continue to grow,
-shaping economies, cultures, and societies around the world.
+shift in how humans interact with machines and information.
 </p>
 
 <p>
-When developed responsibly and used ethically, AI has the potential to improve lives, solve complex
-problems, and unlock new possibilities for human progress. Understanding AI is no longer optional—
-it is essential for navigating the future.
+Understanding AI is no longer optional—it is essential for navigating the future.
 </p>
 
+<!-- CONTINUE BUTTON (LOCKED INITIALLY) -->
 <a href="{BASE_URL}/redirect/{slug}">
-<button class="btn">Continue</button>
+<button id="continueBtn" class="btn" disabled>Continue</button>
 </a>
 
 </div>
