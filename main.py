@@ -110,20 +110,98 @@ if not target:
 
     return f"""
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>Please wait</title>
+
+<style>
+body {{
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+    color: #fff;
+}}
+
+.container {{
+    max-width: 420px;
+    margin: auto;
+    padding: 16px;
+}}
+
+.card {{
+    background: #ffffff;
+    color: #333;
+    border-radius: 14px;
+    padding: 16px;
+    margin-bottom: 16px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+}}
+
+h2, h3 {{
+    margin-top: 0;
+}}
+
+.timer {{
+    font-size: 28px;
+    font-weight: bold;
+    color: #ff5722;
+    text-align: center;
+}}
+
+.notice {{
+    text-align: center;
+    font-size: 14px;
+    color: #555;
+}}
+
+.ad-box {{
+    background: #f2f2f2;
+    border-radius: 10px;
+    padding: 10px;
+    text-align: center;
+    margin: 10px 0;
+}}
+
+.content p {{
+    font-size: 15px;
+    line-height: 1.6;
+}}
+
+#continue {{
+    display: none;
+    text-align: center;
+}}
+
+.btn {{
+    background: linear-gradient(135deg, #ff416c, #ff4b2b);
+    border: none;
+    border-radius: 30px;
+    padding: 14px 24px;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    width: 100%;
+}}
+
+.btn:active {{
+    transform: scale(0.97);
+}}
+</style>
+
 <script>
 let t = 10;
 function startTimer() {{
-  let timer = setInterval(() => {{
-    document.getElementById("timer").innerText = t;
-    t--;
-    if (t < 0) {{
-      clearInterval(timer);
-      document.getElementById("continue").style.display = "block";
-    }}
-  }}, 1000);
+    let timer = setInterval(() => {{
+        document.getElementById("timer").innerText = t;
+        t--;
+        if (t < 0) {{
+            clearInterval(timer);
+            document.getElementById("continue").style.display = "block";
+        }}
+    }}, 1000);
 }}
 window.onload = startTimer;
 </script>
@@ -131,44 +209,58 @@ window.onload = startTimer;
 
 <body>
 
-<h2>Sponsored Ads</h2>
+<div class="container">
 
-<!-- ADSTERRA BANNER -->
-<div>PASTE ADSTERRA BANNER CODE HERE</div>
+    <div class="card">
+        <h2>Sponsored Content</h2>
 
-<p>Please wait <b><span id="timer">10</span></b> seconds, we are loading your content.</p>
+        <div class="ad-box">
+            <!-- ADSTERRA BANNER CODE HERE -->
+            <b>Advertisement</b>
+        </div>
 
-<!-- LONG AI CONTENT -->
-<h3>How Artificial Intelligence Is Changing the World</h3>
-<p>
-Artificial Intelligence (AI) is transforming nearly every industry.
-From healthcare diagnostics to automated customer support, AI systems
-are enabling faster, smarter, and more efficient decision-making.
-Machine learning models now analyze massive datasets to identify
-patterns that humans simply cannot detect.
-</p>
+        <p class="notice">
+            Please wait <span class="timer" id="timer">10</span> seconds  
+            <br>We are loading your content…
+        </p>
+    </div>
 
-<p>
-Large Language Models, such as modern conversational AI, are reshaping
-how people interact with technology. These systems assist with writing,
-coding, education, and research, making advanced knowledge more
-accessible to everyone.
-</p>
+    <div class="card content">
+        <h3>How AI Is Changing the World</h3>
 
-<!-- VIDEO / SOCIAL BAR -->
-<div>PASTE ADSTERRA VIDEO / SOCIAL BAR CODE HERE</div>
+        <p>
+        Artificial Intelligence (AI) is rapidly transforming the way we live,
+        work, and interact with technology. From smart assistants and automated
+        customer support to medical diagnostics and financial forecasting, AI
+        systems are becoming deeply embedded in everyday life.
+        </p>
 
-<p>
-As AI continues to evolve, ethical considerations and responsible
-deployment will become increasingly important. Transparency,
-fairness, and accountability must guide future AI development.
-</p>
+        <p>
+        Modern AI relies heavily on machine learning, where systems learn from
+        vast amounts of data instead of being explicitly programmed. This allows
+        AI models to recognize patterns, make predictions, and continuously
+        improve over time.
+        </p>
 
-<div id="continue" style="display:none;">
-  <p><b>Scroll down and click continue</b></p>
-  <a href="/redirect/{slug}">
-    <button>Continue</button>
-  </a>
+        <div class="ad-box">
+            <!-- ADSTERRA VIDEO / SOCIAL BAR -->
+            <b>Video Ad</b>
+        </div>
+
+        <p>
+        As AI adoption grows, ethical considerations such as data privacy,
+        transparency, and fairness become increasingly important. Responsible AI
+        development ensures that technology benefits society without causing harm.
+        </p>
+    </div>
+
+    <div class="card" id="continue">
+        <p style="text-align:center;"><b>Scroll down and continue</b></p>
+        <a href="/redirect/{slug}">
+            <button class="btn">Continue to Content</button>
+        </a>
+    </div>
+
 </div>
 
 </body>
