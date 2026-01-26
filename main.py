@@ -184,39 +184,41 @@ function copyLink(){{
 # ================= AD PAGE =================
 @app.get("/go/{slug}", response_class=HTMLResponse)
 async def ad_page(slug: str, request: Request, db=Depends(get_db)):
-    ip = request.client.host
+    ip = request.client.host if request.client else "unknown"
+    key = f"{ip}:{slug}"
     now = time.time()
-    if now - REQUEST_LOG.get(ip, 0) < 1:
-        raise HTTPException(status_code=429)
-    REQUEST_LOG[ip] = now
+
+    if now - REQUEST_LOG.get(key, 0) < 1:
+        raise HTTPException(status_code=429, detail="Too fast")
+
+    REQUEST_LOG[key] = now
 
     link = db.query(Link).filter(Link.slug == slug).first()
     if not link:
-        return "Invalid link"
+        return HTMLResponse("Invalid link", status_code=404)
 
     link.clicks += 1
     db.commit()
 
-    HTML = """
+    return f"""
 <!DOCTYPE html>
 <html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <style>
-body{background:#0f2027;color:#fff;font-family:system-ui}
-.card{background:#fff;color:#000;border-radius:16px;padding:16px;margin:16px}
-.btn{background:#ff4b2b;color:#fff;border:none;padding:14px;width:100%;border-radius:30px}
-a{text-decoration:none}
+body{{background:#0f2027;color:#fff;font-family:system-ui}}
+.card{{background:#fff;color:#000;border-radius:16px;padding:16px;margin:16px}}
+.btn{{background:#ff4b2b;color:#fff;border:none;padding:14px;width:100%;border-radius:30px}}
 </style>
 <script>
 let t=10;
 let i=setInterval(()=>{
   document.getElementById("t").innerText=t;
-  if(t<=0){
+  if(t<=0){{
     clearInterval(i);
     document.getElementById("c").style.display="block";
     document.getElementById("t").innerText=0;
-  }
+  }}
   t--;
 },1000);
 </script>
@@ -226,11 +228,10 @@ let i=setInterval(()=>{
 <div class="card">
 <h3>Sponsored</h3>
 <p>Please wait <b id="t">10</b> seconds</p>
-<!-- AD PLACE HERE -->
 </div>
 
 <div class="card" id="c" style="display:none">
-<a href="/redirect/{slug}">
+<a href="{BASE_URL}/redirect/{slug}">
 <button class="btn">Continue</button>
 </a>
 </div>
