@@ -175,15 +175,19 @@ async def admin_create(
     db=Depends(get_db)
 ):
     check_admin(password)
+
     link = Link(slug=slug, target=target)
     db.add(link)
     db.commit()
+
     LINK_CACHE[slug] = link
+
     full_url = f"https://fast-link-2cmx.onrender.com/go/{slug}"
-return {
-    "created": True,
-    "short_url": full_url
-}
+
+    return {
+        "created": True,
+        "short_url": full_url
+    }
 
 # ================= PUBLIC AD PAGE =================
 @app.get("/go/{slug}", response_class=HTMLResponse)
