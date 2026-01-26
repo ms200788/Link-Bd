@@ -150,8 +150,37 @@ function copyLink(){
 </body>
 </html>
 """
-    return HTML.format(url=full_url)
+    return f"""
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+body{{background:#0f2027;color:#fff;font-family:system-ui}}
+.card{{background:#fff;color:#000;border-radius:16px;padding:16px;margin:16px}}
+button{{background:#4caf50;color:#fff;border:none;padding:14px;width:100%;border-radius:30px}}
+input{{width:100%;padding:12px}}
+</style>
+<script>
+function copyLink(){{
+  let i=document.getElementById("l");
+  i.select();
+  document.execCommand("copy");
+  alert("Copied");
+}}
+</script>
+</head>
+<body>
 
+<div class="card">
+<h3>Link Created</h3>
+<input id="l" value="{full_url}" readonly>
+<button onclick="copyLink()">Copy Link</button>
+</div>
+
+</body>
+</html>
+"""
 # ================= AD PAGE =================
 @app.get("/go/{slug}", response_class=HTMLResponse)
 async def ad_page(slug: str, request: Request, db=Depends(get_db)):
