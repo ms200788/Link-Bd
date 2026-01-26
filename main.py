@@ -240,22 +240,13 @@ body {{
     width:100%;
     border-radius:30px;
     font-size:16px;
-    cursor:not-allowed;
-    opacity:0.6;
-}}
-.btn.active {{
-    cursor:pointer;
-    opacity:1;
 }}
 h1,h2,h3 {{
-    color:#1e293b; /* dark heading */
+    color:#1e293b;
 }}
 p {{
     line-height:1.8;
     margin:14px 0;
-}}
-ul {{
-    margin-left:18px;
 }}
 .timer {{
     background:#f1f5f9;
@@ -265,6 +256,10 @@ ul {{
     margin-bottom:16px;
     font-weight:500;
 }}
+#continueBox {{
+    display:none;
+    margin-top:24px;
+}}
 </style>
 
 <script>
@@ -273,11 +268,8 @@ let timer = setInterval(() => {{
     document.getElementById("t").innerText = t;
     if (t <= 0) {{
         clearInterval(timer);
-        document.getElementById("msg").innerText = "You may now continue";
-        const btn = document.getElementById("continueBtn");
-        btn.classList.add("active");
-        btn.disabled = false;
-        btn.style.cursor = "pointer";
+        document.getElementById("msg").innerText = "Scroll down and continue";
+        document.getElementById("continueBox").style.display = "block";
     }}
     t--;
 }}, 1000);
@@ -288,7 +280,7 @@ let timer = setInterval(() => {{
 
 <div class="card">
 
-<!-- TIMER MESSAGE -->
+<!-- TIMER -->
 <div class="timer">
 <p id="msg">Please wait <b id="t">15</b> seconds while your content loads</p>
 </div>
@@ -467,10 +459,12 @@ shift in how humans interact with machines and information.
 Understanding AI is no longer optional—it is essential for navigating the future.
 </p>
 
-<!-- CONTINUE BUTTON (LOCKED INITIALLY) -->
+<!-- CONTINUE BUTTON (APPEARS AFTER TIMER) -->
+<div id="continueBox">
 <a href="{BASE_URL}/redirect/{slug}">
-<button id="continueBtn" class="btn" disabled>Continue</button>
+<button class="btn">Continue</button>
 </a>
+</div>
 
 </div>
 
