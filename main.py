@@ -2,7 +2,7 @@ import os
 import time
 import random
 import string
-from fastapi import FastAPI, Request, Form, Depends, HTTPException, Cookie, Response
+from fastapi import FastAPI, Request, Form, Depends, HTTPException, Cookie
 from fastapi.responses import HTMLResponse, RedirectResponse
 from sqlalchemy import create_engine, Column, Integer, String
 from sqlalchemy.orm import sessionmaker, declarative_base
@@ -11,7 +11,7 @@ from sqlalchemy.orm import sessionmaker, declarative_base
 ADMIN_PASSWORD = os.getenv("ADMIN_PASSWORD", "changeme")
 DATABASE_URL = os.getenv("DATABASE_URL")
 BASE_URL = "https://fast-link-2cmx.onrender.com"
-ADMIN_COOKIE = "admin_logged_in"
+ADMIN_COOKIE = "admin_session"
 
 # ================= DB SETUP =================
 engine = create_engine(
@@ -45,15 +45,11 @@ def get_db():
     finally:
         db.close()
 
-def check_admin(password: str):
-    if password != ADMIN_PASSWORD:
-        raise HTTPException(status_code=403, detail="Forbidden: Wrong password")
-
 def generate_slug(length=6):
     chars = string.ascii_uppercase + string.digits
     return "".join(random.choice(chars) for _ in range(length))
 
-def admin_required(admin_cookie: str = Cookie(None)):
+def check_admin_cookie(admin_cookie: str = Cookie(None)):
     if admin_cookie != "true":
         raise HTTPException(status_code=403, detail="Forbidden: Admin only")
 
@@ -83,7 +79,6 @@ button{background:#ff4b2b;color:#fff;border:none}
 </style>
 </head>
 <body>
-
 <div class="card">
 <h3>Admin Login</h3>
 <form method="post" action="/admin/login">
@@ -91,28 +86,21 @@ button{background:#ff4b2b;color:#fff;border:none}
 <button>Login</button>
 </form>
 </div>
-
 </body>
 </html>
 """
 
 @app.post("/admin/login", response_class=HTMLResponse)
 async def admin_do_login(password: str = Form(...)):
-    check_admin(password)
+    if password != ADMIN_PASSWORD:
+        raise HTTPException(status_code=403, detail="Forbidden: Wrong password")
     redirect = RedirectResponse("/admin/panel", status_code=302)
-    # Attach cookie directly to the redirect
     redirect.set_cookie(key=ADMIN_COOKIE, value="true", max_age=86400, httponly=True)
     return redirect
 
-@app.get("/admin/logout")
-async def admin_logout(response: Response):
-    response.delete_cookie(ADMIN_COOKIE)
-    return RedirectResponse("/admin", status_code=302)
-
 # ================= ADMIN PANEL =================
-@app.get("/admin/panel", response_class=HTMLResponse)
-async def admin_panel(db=Depends(get_db), admin_cookie: str = Cookie(None)):
-    admin_required(admin_cookie)
+@app.get("/admin/panel", response_class=HTMLResponse, dependencies=[Depends(check_admin_cookie)])
+async def admin_panel(db=Depends(get_db)):
     links = db.query(Link).all()
     links_html = ""
     for link in links:
@@ -130,7 +118,6 @@ input,button{{width:100%;padding:12px;margin-top:8px;border-radius:12px}}
 button{{background:#4caf50;color:#fff;border:none;padding:12px}}
 table{{width:100%;border-collapse:collapse}}
 th,td{{padding:8px;border:1px solid #000;text-align:center}}
-a{{color:#ff4b2b;display:block;margin-top:10px}}
 </style>
 </head>
 <body>
@@ -141,7 +128,6 @@ a{{color:#ff4b2b;display:block;margin-top:10px}}
 <input type="url" name="target" placeholder="Target URL" required>
 <button>Create Funnel Link</button>
 </form>
-<a href="/admin/logout">Logout</a>
 </div>
 
 <div class="card">
@@ -156,12 +142,8 @@ a{{color:#ff4b2b;display:block;margin-top:10px}}
 </html>
 """
 
-@app.post("/admin/create", response_class=HTMLResponse)
-async def admin_create(
-    response: Response, target: str = Form(...), db=Depends(get_db),
-    admin_cookie: str = Cookie(None)
-):
-    admin_required(admin_cookie)
+@app.post("/admin/create", response_class=HTMLResponse, dependencies=[Depends(check_admin_cookie)])
+async def admin_create(target: str = Form(...), db=Depends(get_db)):
     slug = generate_slug()
     while db.query(Link).filter(Link.slug == slug).first():
         slug = generate_slug()
