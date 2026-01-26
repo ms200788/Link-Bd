@@ -100,12 +100,13 @@ async def ad_page(slug: str, request: Request, db=Depends(get_db)):
     REQUEST_LOG[ip] = now
 
     # --- Cache first ---
-    link = LINK_CACHE.get(slug)
+    target = LINK_CACHE.get(slug)
+if not target:
+    link = db.query(Link).filter(Link.slug == slug).first()
     if not link:
-        link = db.query(Link).filter(Link.slug == slug).first()
-        if not link:
-            return "Invalid link"
-        LINK_CACHE[slug] = link
+        return "Invalid link"
+    target = link.target
+    LINK_CACHE[slug] = target
 
     return f"""
 <!DOCTYPE html>
