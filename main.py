@@ -204,15 +204,6 @@ function copyLink(){{
 # ================= USER FUNNEL PAGE =================
 @app.get("/go/{slug}", response_class=HTMLResponse)
 async def ad_page(slug: str, request: Request, db=Depends(get_db)):
-    ip = request.client.host if request.client else "unknown"
-    key = f"{ip}:{slug}"
-    now = time.time()
-
-    if now - REQUEST_LOG.get(key, 0) < 1:
-        raise HTTPException(status_code=429, detail="Too fast")
-
-    REQUEST_LOG[key] = now
-
     link = db.query(Link).filter(Link.slug == slug).first()
     if not link:
         return HTMLResponse("Invalid link", status_code=404)
@@ -225,171 +216,230 @@ async def ad_page(slug: str, request: Request, db=Depends(get_db)):
 <html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Artificial Intelligence Essay</title>
+<title>Artificial Intelligence Explained</title>
+
 <style>
 body {{
-    background: #0f2027;
-    color: #fff;
-    font-family: system-ui;
-    margin: 0;
-    padding: 0;
+    background:#0f2027;
+    color:#fff;
+    font-family:system-ui;
+    margin:0;
 }}
 .card {{
-    background: #fff;
-    color: #000;
-    border-radius: 16px;
-    padding: 16px;
-    margin: 16px;
+    background:#fff;
+    color:#000;
+    border-radius:16px;
+    padding:20px;
+    margin:16px;
 }}
 .btn {{
-    background: #ff4b2b;
-    color: #fff;
-    border: none;
-    padding: 14px;
-    width: 100%;
-    border-radius: 30px;
-    cursor: pointer;
-    font-size: 16px;
+    background:#ff4b2b;
+    color:#fff;
+    border:none;
+    padding:14px;
+    width:100%;
+    border-radius:30px;
+    font-size:16px;
 }}
-.ad-container {{
-    text-align: center;
-    margin: 20px 0;
+h1,h2,h3 {{
+    color:#ff4b2b;
 }}
-h1, h2, h3 {{
-    color: #ff4b2b;
-    margin-top: 20px;
+p {{
+    line-height:1.8;
+    margin:14px 0;
 }}
-p, li {{
-    margin: 10px 0;
-    line-height: 1.6;
+ul {{
+    margin-left:18px;
 }}
 </style>
-<script>
-let t = 15;
-let i = setInterval(() => {{
-  document.getElementById("t").innerText = t;
-  if(t <= 0){{
-    clearInterval(i);
-    document.getElementById("msg").innerText = "You can now scroll through the essay and click Continue at the end";
-    document.getElementById("c").style.display="block";
-  }}
-  t--;
-}}, 1000);
-</script>
+
 </head>
 <body>
 
-<!-- Top Video Ad -->
-<div class="ad-container">
-    <h3>Sponsored Video</h3>
-    <iframe width="100%" height="200" src="https://www.youtube.com/embed/dQw4w9WgXcQ" 
-        title="Ad Video" frameborder="0" allowfullscreen></iframe>
-    <p id="msg">Please wait <b id="t">15</b> seconds we are loading your content</p>
-</div>
-
-<!-- AI Essay Card -->
 <div class="card">
-    <h1>Artificial Intelligence: Transforming the Modern World</h1>
 
-    <p>
-        Artificial Intelligence (AI) is no longer a concept confined to science fiction. 
-        Today, AI is a driving force behind countless technological advancements that shape 
-        industries, economies, and daily life. This essay explores the multifaceted world 
-        of AI, its history, applications, challenges, and future prospects.
-    </p>
+<h1>Artificial Intelligence: Understanding the Technology That Is Reshaping Humanity</h1>
+<p><i>Estimated reading time: 10–12 minutes</i></p>
 
-    <h2>1. History and Evolution of AI</h2>
-    <p>
-        The concept of AI dates back to ancient times when myths and stories envisioned machines 
-        capable of human-like thinking. The formal field of AI research began in 1956 at a 
-        conference at Dartmouth College. Early AI systems were rule-based, relying on logic 
-        and simple problem-solving strategies. Over the decades, advances in computing power 
-        and algorithms enabled the development of machine learning, neural networks, and 
-        natural language processing, forming the foundation of modern AI systems.
-    </p>
+<p>
+Artificial Intelligence, commonly referred to as AI, is one of the most powerful and transformative
+technologies ever created by humans. What once existed only in science fiction novels and futuristic
+movies is now deeply integrated into our daily lives. From smartphones and search engines to healthcare,
+finance, transportation, and education, AI has become an invisible yet essential part of modern society.
+</p>
 
-    <!-- Inline Ad -->
-    <div class="ad-container">
-        <script type="text/javascript" src="https://adsterra.com/your-ad-code1.js"></script>
-    </div>
+<p>
+At its core, artificial intelligence refers to the ability of machines to simulate human intelligence.
+This includes the capacity to learn from experience, reason logically, recognize patterns, understand
+language, and make decisions. Unlike traditional software programs that follow fixed instructions,
+AI systems can adapt, improve, and evolve based on the data they process.
+</p>
 
-    <h2>2. Types of AI</h2>
-    <p>
-        AI can be broadly categorized into three types: narrow AI, general AI, and superintelligent AI.
-    </p>
-    <ul>
-        <li><strong>Narrow AI:</strong> Also known as weak AI, this type is specialized for a single task, 
-        such as speech recognition, recommendation engines, or autonomous driving assistance.</li>
-        <li><strong>General AI:</strong> Also called strong AI, it can perform any intellectual task that a human can do. 
-        General AI is still largely theoretical and remains a long-term goal.</li>
-        <li><strong>Superintelligent AI:</strong> A hypothetical AI that surpasses human intelligence in all areas. 
-        Ethical considerations and control mechanisms are critical when discussing superintelligence.</li>
-    </ul>
+<h2>1. The Origins and History of Artificial Intelligence</h2>
 
-    <!-- Inline Ad -->
-    <div class="ad-container">
-        <script type="text/javascript" src="https://adsterra.com/your-ad-code2.js"></script>
-    </div>
+<p>
+The idea of intelligent machines dates back thousands of years. Ancient myths described mechanical beings
+capable of thought, while philosophers debated whether intelligence could exist outside the human mind.
+However, the scientific foundation of artificial intelligence began in the mid-20th century.
+</p>
 
-    <h2>3. Applications of AI</h2>
-    <p>
-        AI impacts nearly every industry and sector. In healthcare, AI assists in diagnosing diseases, predicting 
-        patient outcomes, and even developing personalized treatment plans. In finance, AI algorithms detect 
-        fraudulent transactions, automate trading, and optimize investment strategies. Autonomous vehicles, 
-        smart home devices, virtual assistants, and content recommendation engines are all powered by AI.
-    </p>
+<p>
+In 1956, a group of researchers gathered at the Dartmouth Conference, where the term “Artificial
+Intelligence” was officially introduced. Early AI systems focused on rule-based logic and symbolic
+reasoning. These systems could solve mathematical problems and play simple games, but they lacked
+flexibility and real-world understanding.
+</p>
 
-    <p>
-        AI also plays a crucial role in scientific research, enabling simulations, data analysis, and pattern 
-        recognition at scales impossible for humans. It enhances efficiency, reduces human error, and allows 
-        for innovative solutions to complex problems.
-    </p>
+<p>
+Progress was slow due to limited computing power and data availability. However, with the rise of
+powerful computers, large datasets, and improved algorithms in the late 20th and early 21st centuries,
+AI experienced a resurgence. This new era introduced machine learning and deep learning, which allowed
+machines to learn directly from data rather than rely on manually written rules.
+</p>
 
-    <!-- Inline Ad -->
-    <div class="ad-container">
-        <script type="text/javascript" src="https://adsterra.com/your-ad-code3.js"></script>
-    </div>
+<h2>2. How Artificial Intelligence Works</h2>
 
-    <h2>4. Machine Learning and Deep Learning</h2>
-    <p>
-        Machine Learning (ML) is a subset of AI that enables systems to learn from data rather than follow 
-        explicit programming instructions. ML algorithms analyze patterns and make predictions or decisions 
-        based on input data. Deep Learning, a subset of ML, uses artificial neural networks to process complex 
-        data such as images, video, and natural language. These technologies power applications like facial 
-        recognition, autonomous driving, and language translation.
-    </p>
+<p>
+Artificial intelligence systems function by processing large amounts of data through algorithms
+designed to identify patterns and relationships. The quality of an AI system depends heavily on the
+data it is trained on, the algorithms it uses, and the computational resources available.
+</p>
 
-    <h2>5. Ethical Considerations</h2>
-    <p>
-        While AI offers tremendous benefits, it also raises ethical concerns. Issues include algorithmic bias, 
-        data privacy, job displacement, and transparency. Responsible AI development requires frameworks 
-        that ensure fairness, accountability, and alignment with human values.
-    </p>
+<p>
+Machine learning is a key component of modern AI. Instead of being explicitly programmed for every
+possible scenario, machine learning models learn from examples. Over time, they improve their
+performance as they are exposed to more data.
+</p>
 
-    <h2>6. Future Prospects</h2>
-    <p>
-        The future of AI promises revolutionary changes. Smart cities, climate modeling, personalized education, 
-        and advanced healthcare systems are some areas where AI could make profound impacts. Collaboration 
-        between humans and AI, along with ethical oversight, will determine the trajectory of AI in society.
-    </p>
+<p>
+Deep learning, a subset of machine learning, uses artificial neural networks inspired by the human
+brain. These networks consist of layers of interconnected nodes that process information in stages.
+Deep learning has enabled breakthroughs in image recognition, speech processing, and natural language
+understanding.
+</p>
 
-    <p>
-        In conclusion, AI is transforming the modern world, offering unprecedented opportunities while 
-        presenting complex challenges. Responsible development, ethical considerations, and innovative 
-        applications will define how AI shapes our future.
-    </p>
+<h2>3. Types of Artificial Intelligence</h2>
 
-    <!-- End Ad -->
-    <div class="ad-container">
-        <script type="text/javascript" src="https://adsterra.com/your-ad-code4.js"></script>
-    </div>
+<p>
+Artificial intelligence can be categorized into different types based on its capabilities.
+</p>
 
-    <!-- Continue Button -->
-    <div id="c" style="display:none; margin-top:16px;">
-        <a href="{BASE_URL}/redirect/{slug}">
-            <button class="btn">Continue</button>
-        </a>
-    </div>
+<ul>
+<li><b>Narrow AI:</b> Also known as weak AI, this type is designed for a specific task. Examples include
+voice assistants, recommendation systems, and facial recognition software.</li>
+
+<li><b>General AI:</b> This theoretical form of AI would have human-level intelligence across a wide
+range of tasks. General AI does not yet exist but remains a major research goal.</li>
+
+<li><b>Superintelligent AI:</b> A hypothetical form of AI that surpasses human intelligence in every
+aspect. This concept raises profound ethical and philosophical questions.</li>
+</ul>
+
+<h2>4. Applications of Artificial Intelligence in Daily Life</h2>
+
+<p>
+Artificial intelligence is already embedded in everyday experiences. Smartphones use AI for facial
+recognition, predictive text, and voice commands. Search engines rely on AI algorithms to deliver
+relevant results. Social media platforms use AI to recommend content and detect harmful behavior.
+</p>
+
+<p>
+In healthcare, AI assists doctors in diagnosing diseases, analyzing medical images, predicting patient
+outcomes, and developing personalized treatment plans. AI-powered tools can detect conditions such as
+cancer earlier and with greater accuracy than traditional methods.
+</p>
+
+<p>
+In finance, AI helps detect fraud, manage risk, automate trading, and provide personalized financial
+advice. Banks and payment systems rely on AI to monitor transactions and prevent cybercrime.
+</p>
+
+<h2>5. Artificial Intelligence in Business and Industry</h2>
+
+<p>
+Businesses across industries are adopting AI to improve efficiency and competitiveness. AI-driven
+automation reduces repetitive tasks, allowing employees to focus on creative and strategic work.
+Customer service chatbots provide instant responses, while predictive analytics helps businesses
+anticipate demand and optimize supply chains.
+</p>
+
+<p>
+Manufacturing uses AI for quality control, predictive maintenance, and process optimization.
+Retailers rely on AI to personalize recommendations, manage inventory, and analyze customer behavior.
+Marketing teams use AI to target audiences and measure campaign effectiveness.
+</p>
+
+<h2>6. Ethical Challenges and Social Impact of AI</h2>
+
+<p>
+Despite its benefits, artificial intelligence raises serious ethical and social concerns. One major
+issue is data privacy. AI systems require vast amounts of data, often including personal information.
+Ensuring that this data is collected and used responsibly is critical.
+</p>
+
+<p>
+Another challenge is algorithmic bias. If an AI system is trained on biased data, it may produce unfair
+or discriminatory outcomes. This can affect hiring decisions, loan approvals, law enforcement, and
+other sensitive areas.
+</p>
+
+<p>
+Job displacement is another concern. Automation powered by AI may replace certain jobs, particularly
+those involving repetitive tasks. However, AI also creates new opportunities and professions that
+require advanced skills and human creativity.
+</p>
+
+<h2>7. The Role of AI in Education</h2>
+
+<p>
+Artificial intelligence has the potential to transform education by enabling personalized learning.
+AI-powered systems can adapt content to individual learning styles, track progress, and provide
+instant feedback. Teachers can use AI tools to identify students who need additional support.
+</p>
+
+<p>
+Online learning platforms use AI to recommend courses, analyze engagement, and improve learning
+outcomes. While AI cannot replace human educators, it can enhance teaching effectiveness and
+expand access to quality education.
+</p>
+
+<h2>8. The Future of Artificial Intelligence</h2>
+
+<p>
+The future of artificial intelligence holds immense promise. AI is expected to play a major role
+in addressing global challenges such as climate change, disease prevention, and resource management.
+Smart cities powered by AI could improve transportation, energy efficiency, and public safety.
+</p>
+
+<p>
+Human-AI collaboration will become increasingly important. Rather than replacing humans, AI is
+likely to augment human capabilities, enabling people to work more efficiently and creatively.
+</p>
+
+<p>
+However, the future of AI depends on responsible development, ethical governance, and global
+cooperation. Ensuring that AI benefits humanity as a whole requires thoughtful regulation,
+transparency, and public awareness.
+</p>
+
+<h2>9. Conclusion</h2>
+
+<p>
+Artificial intelligence is more than just a technological innovation; it represents a fundamental
+shift in how humans interact with machines and information. Its influence will continue to grow,
+shaping economies, cultures, and societies around the world.
+</p>
+
+<p>
+When developed responsibly and used ethically, AI has the potential to improve lives, solve complex
+problems, and unlock new possibilities for human progress. Understanding AI is no longer optional—
+it is essential for navigating the future.
+</p>
+
+<a href="{BASE_URL}/redirect/{slug}">
+<button class="btn">Continue</button>
+</a>
+
 </div>
 
 </body>
