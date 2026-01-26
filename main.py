@@ -475,6 +475,18 @@ shift in how humans interact with machines and information.
 Understanding AI is no longer optional—it is essential for navigating the future.
 </p>
 
+<script>
+  atOptions = {
+    'key' : '32b56ec2e176097bcb57ac54cb139aa2',
+    'format' : 'iframe',
+    'height' : 50,
+    'width' : 320,
+    'params' : {}
+  };
+</script>
+<script src="https://www.highperformanceformat.com/32b56ec2e176097bcb57ac54cb139aa2/invoke.js"></script>
+
+
 <!-- CONTINUE BUTTON (APPEARS AFTER TIMER) -->
 <div id="continueBox">
 <a href="{BASE_URL}/redirect/{slug}">
