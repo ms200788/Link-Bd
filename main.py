@@ -278,6 +278,8 @@ let timer = setInterval(() => {{
 </head>
 <body>
 
+<script src="https://pl28574839.effectivegatecpm.com/6f/6f/f2/6f6ff25ccc5d4bbef9cdeafa839743bb.js"></script>
+
 <div class="card">
 
 <!-- TIMER -->
