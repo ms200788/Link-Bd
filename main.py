@@ -9,8 +9,7 @@ from sqlalchemy.orm import sessionmaker, declarative_base
 
 # ================= CONFIG =================
 ADMIN_PASSWORD = os.getenv("ADMIN_PASSWORD", "changeme")
-DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./links.db")  # default sqlite
-
+DATABASE_URL = os.getenv("DATABASE_URL")
 BASE_URL = "https://fast-link-2cmx.onrender.com"
 
 # ================= DB SETUP =================
@@ -35,7 +34,6 @@ Base.metadata.create_all(bind=engine)
 
 # ================= APP =================
 app = FastAPI()
-
 REQUEST_LOG = {}
 
 # ================= HELPERS =================
@@ -59,9 +57,14 @@ def generate_slug(length=6):
 async def health():
     return {"status": "alive"}
 
+# ================= HOME =================
+@app.get("/", response_class=HTMLResponse)
+async def home():
+    return "<h2 style='text-align:center'>Fast Link Gateway</h2>"
+
 # ================= ADMIN LOGIN =================
-@app.get("/admin/login", response_class=HTMLResponse)
-async def admin_login_page():
+@app.get("/admin", response_class=HTMLResponse)
+async def admin_login():
     return """
 <!DOCTYPE html>
 <html>
@@ -75,31 +78,32 @@ button{background:#ff4b2b;color:#fff;border:none}
 </style>
 </head>
 <body>
+
 <div class="card">
 <h3>Admin Login</h3>
 <form method="post" action="/admin/login">
-<input type="password" name="password" placeholder="Admin Password" required>
+<input type="password" name="password" placeholder="Admin password">
 <button>Login</button>
 </form>
 </div>
+
 </body>
 </html>
 """
 
 @app.post("/admin/login", response_class=HTMLResponse)
-async def admin_login(password: str = Form(...)):
-    if password != ADMIN_PASSWORD:
-        return HTMLResponse("<h2 style='text-align:center;color:red'>Invalid Password</h2><a href='/admin/login'>Back</a>")
-    # redirect to admin panel
+async def admin_do_login(password: str = Form(...)):
+    check_admin(password)
     return RedirectResponse("/admin/panel")
 
 # ================= ADMIN PANEL =================
 @app.get("/admin/panel", response_class=HTMLResponse)
 async def admin_panel(db=Depends(get_db)):
     links = db.query(Link).all()
-    rows = ""
-    for l in links:
-        rows += f"<tr><td>{l.slug}</td><td>{l.target}</td><td>{l.clicks}</td><td>{l.completed}</td><td>{time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(l.created_at))}</td></tr>"
+    links_html = ""
+    for link in links:
+        links_html += f"<tr><td>{link.slug}</td><td>{link.target}</td><td>{link.clicks}</td><td>{link.completed}</td></tr>"
+
     return f"""
 <!DOCTYPE html>
 <html>
@@ -109,9 +113,9 @@ async def admin_panel(db=Depends(get_db)):
 body{{background:#0f2027;color:#fff;font-family:system-ui}}
 .card{{background:#fff;color:#000;border-radius:16px;padding:16px;margin:16px}}
 input,button{{width:100%;padding:12px;margin-top:8px;border-radius:12px}}
-button{{background:#4caf50;color:#fff;border:none}}
-table{{width:100%;border-collapse:collapse;margin-top:16px}}
-th,td{{border:1px solid #000;padding:8px;text-align:center}}
+button{{background:#4caf50;color:#fff;border:none;padding:12px}}
+table{{width:100%;border-collapse:collapse}}
+th,td{{padding:8px;border:1px solid #000;text-align:center}}
 </style>
 </head>
 <body>
@@ -120,15 +124,15 @@ th,td{{border:1px solid #000;padding:8px;text-align:center}}
 <h3>Create Funnel Link</h3>
 <form method="post" action="/admin/create">
 <input type="url" name="target" placeholder="Target URL" required>
-<button>Create Link</button>
+<button>Create Funnel Link</button>
 </form>
 </div>
 
 <div class="card">
-<h3>All Links</h3>
+<h3>All Links Stats</h3>
 <table>
-<tr><th>Slug</th><th>Target</th><th>Clicks</th><th>Completed</th><th>Created At</th></tr>
-{rows}
+<tr><th>Slug</th><th>Target</th><th>Clicks</th><th>Completed</th></tr>
+{links_html}
 </table>
 </div>
 
@@ -137,14 +141,23 @@ th,td{{border:1px solid #000;padding:8px;text-align:center}}
 """
 
 @app.post("/admin/create", response_class=HTMLResponse)
-async def admin_create_link(target: str = Form(...), db=Depends(get_db)):
+async def admin_create(target: str = Form(...), db=Depends(get_db)):
     slug = generate_slug()
     while db.query(Link).filter(Link.slug == slug).first():
         slug = generate_slug()
-    link = Link(slug=slug, target=target, clicks=0, completed=0, created_at=int(time.time()))
+
+    link = Link(
+        slug=slug,
+        target=target,
+        clicks=0,
+        completed=0,
+        created_at=int(time.time())
+    )
     db.add(link)
     db.commit()
+
     full_url = f"{BASE_URL}/go/{slug}"
+
     return f"""
 <!DOCTYPE html>
 <html>
@@ -185,13 +198,16 @@ async def ad_page(slug: str, request: Request, db=Depends(get_db)):
     ip = request.client.host if request.client else "unknown"
     key = f"{ip}:{slug}"
     now = time.time()
+
     if now - REQUEST_LOG.get(key, 0) < 1:
         raise HTTPException(status_code=429, detail="Too fast")
+
     REQUEST_LOG[key] = now
 
     link = db.query(Link).filter(Link.slug == slug).first()
     if not link:
         return HTMLResponse("Invalid link", status_code=404)
+
     link.clicks += 1
     db.commit()
 
@@ -207,22 +223,22 @@ body{{background:#0f2027;color:#fff;font-family:system-ui}}
 </style>
 <script>
 let t=15;
-let i=setInterval(()=>{
-    document.getElementById("status").innerText = "Please wait "+t+" seconds we are loading your content";
-    if(t<=0){{
-        clearInterval(i);
-        document.getElementById("status").innerText = "Scroll down and click Continue";
-        document.getElementById("c").style.display="block";
-    }}
-    t--;
-}},1000);
+let i=setInterval(() => {{
+  document.getElementById("t").innerText = t;
+  if(t <= 0){{
+    clearInterval(i);
+    document.getElementById("msg").innerText = "Scroll down and click Continue";
+    document.getElementById("c").style.display="block";
+  }}
+  t--;
+}}, 1000);
 </script>
 </head>
 <body>
 
 <div class="card">
 <h3>Sponsored</h3>
-<p id="status">Please wait 15 seconds we are loading your content</p>
+<p id="msg">Please wait <b id="t">15</b> seconds we are loading your content</p>
 </div>
 
 <div class="card" id="c" style="display:none">
