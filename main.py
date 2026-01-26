@@ -346,6 +346,9 @@ Deep learning has enabled breakthroughs in image recognition, speech processing,
 understanding.
 </p>
 
+<script async="async" data-cfasync="false" src="https://pl28575184.effectivegatecpm.com/f42c86f37946ef5ab59eb2d53980afa3/invoke.js"></script>
+<div id="container-f42c86f37946ef5ab59eb2d53980afa3"></div>
+
 <h2>3. Types of Artificial Intelligence</h2>
 
 <p>
