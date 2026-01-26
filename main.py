@@ -97,11 +97,12 @@ button{background:#ff4b2b;color:#fff;border:none}
 """
 
 @app.post("/admin/login", response_class=HTMLResponse)
-async def admin_do_login(response: Response, password: str = Form(...)):
+async def admin_do_login(password: str = Form(...)):
     check_admin(password)
-    # Set cookie for 1 day
-    response.set_cookie(key=ADMIN_COOKIE, value="true", max_age=86400, httponly=True)
-    return RedirectResponse("/admin/panel", status_code=302)
+    redirect = RedirectResponse("/admin/panel", status_code=302)
+    # Attach cookie directly to the redirect
+    redirect.set_cookie(key=ADMIN_COOKIE, value="true", max_age=86400, httponly=True)
+    return redirect
 
 @app.get("/admin/logout")
 async def admin_logout(response: Response):
