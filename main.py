@@ -225,40 +225,123 @@ async def ad_page(slug: str, request: Request, db=Depends(get_db)):
 <html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI Essay with Ads</title>
 <style>
-body{{background:#0f2027;color:#fff;font-family:system-ui}}
-.card{{background:#fff;color:#000;border-radius:16px;padding:16px;margin:16px}}
-.btn{{background:#ff4b2b;color:#fff;border:none;padding:14px;width:100%;border-radius:30px}}
+body {
+    background: #0f2027;
+    color: #fff;
+    font-family: system-ui;
+    margin: 0;
+    padding: 0;
+}
+.card {
+    background: #fff;
+    color: #000;
+    border-radius: 16px;
+    padding: 16px;
+    margin: 16px;
+}
+.btn {
+    background: #ff4b2b;
+    color: #fff;
+    border: none;
+    padding: 14px;
+    width: 100%;
+    border-radius: 30px;
+    cursor: pointer;
+    font-size: 16px;
+}
+.ad-container {
+    text-align: center;
+    margin: 20px 0;
+}
+h2 {
+    color: #ff4b2b;
+}
+li {
+    margin: 8px 0;
+}
 </style>
 <script>
-let t=15;
-let i=setInterval(() => {{
+let t = 15;
+let i = setInterval(() => {
   document.getElementById("t").innerText = t;
-  if(t <= 0){{
+  if(t <= 0){
     clearInterval(i);
     document.getElementById("msg").innerText = "Scroll down and click Continue";
     document.getElementById("c").style.display="block";
-  }}
+  }
   t--;
-}}, 1000);
+}, 1000);
 </script>
 </head>
 <body>
 
-<div class="card">
-<h3>Sponsored</h3>
-<p id="msg">Please wait <b id="t">15</b> seconds we are loading your content</p>
+<!-- Top Video Ad -->
+<div class="ad-container">
+    <h3>Sponsored Video</h3>
+    <iframe width="100%" height="200" src="https://www.youtube.com/embed/dQw4w9WgXcQ" 
+        title="Ad Video" frameborder="0" allowfullscreen></iframe>
 </div>
 
+<!-- Countdown Card -->
+<div class="card">
+    <h3>Sponsored</h3>
+    <p id="msg">Please wait <b id="t">15</b> seconds we are loading your content</p>
+</div>
+
+<!-- Continue Button -->
 <div class="card" id="c" style="display:none">
-<a href="{BASE_URL}/redirect/{slug}">
-<button class="btn">Continue</button>
-</a>
+    <a href="{BASE_URL}/redirect/{slug}">
+        <button class="btn">Continue</button>
+    </a>
+</div>
+
+<!-- AI Essay Card -->
+<div class="card">
+    <h1>Artificial Intelligence: Key Insights</h1>
+    
+    <ul>
+        <li><strong>Definition:</strong> AI is the simulation of human intelligence by machines that are programmed to think and learn.</li>
+        <li><strong>Applications:</strong> Healthcare, Finance, Education, Autonomous Vehicles, and Customer Service.</li>
+        <li><strong>Machine Learning:</strong> A subset of AI that allows systems to learn from data without being explicitly programmed.</li>
+        <li><strong>Deep Learning:</strong> Uses neural networks to process complex patterns and perform tasks like speech and image recognition.</li>
+        <li><strong>Ethical Considerations:</strong> Privacy, bias in algorithms, and impact on employment are important aspects to address.</li>
+    </ul>
+
+    <!-- Middle Ad 1 -->
+    <div class="ad-container">
+        <h3>Sponsored</h3>
+        <script type="text/javascript" src="https://adsterra.com/your-ad-code1.js"></script>
+    </div>
+
+    <ul>
+        <li><strong>Benefits:</strong> Automates repetitive tasks, enhances decision-making, and improves efficiency.</li>
+        <li><strong>Challenges:</strong> Requires large amounts of data, high computing power, and careful model training.</li>
+        <li><strong>Future Potential:</strong> AI can help solve global challenges like climate change, disease detection, and smart cities.</li>
+    </ul>
+
+    <!-- Middle Ad 2 -->
+    <div class="ad-container">
+        <h3>Sponsored</h3>
+        <script type="text/javascript" src="https://adsterra.com/your-ad-code2.js"></script>
+    </div>
+
+    <ul>
+        <li><strong>Responsible AI:</strong> Ensure AI systems are transparent, accountable, and aligned with human values.</li>
+        <li><strong>Conclusion:</strong> AI is reshaping industries, transforming our daily lives, and holds promise for a better future.</li>
+    </ul>
+
+    <!-- End Ad -->
+    <div class="ad-container">
+        <h3>Sponsored</h3>
+        <script type="text/javascript" src="https://adsterra.com/your-ad-code3.js"></script>
+    </div>
+
 </div>
 
 </body>
 </html>
-"""
 
 # ================= FINAL REDIRECT =================
 @app.get("/redirect/{slug}")
