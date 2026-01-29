@@ -339,8 +339,7 @@ let timer = setInterval(() => {{
 </div>
 
 
-<div class="section">
-<h2>Introduction</h2>
+<div class="section"><h2>Introduction</h2>
 
 <p>
 Artificial Intelligence (AI) is one of the most revolutionary fields of computer science in the modern era.
@@ -371,8 +370,7 @@ differences, and future scope, providing a complete understanding of the topic.
 </p>
 </div>
 
-<div class="section">
-<h2>Artificial Intelligence: An Overview</h2>
+<div class="section"><h2>Artificial Intelligence: An Overview</h2>
 
 <p>
 Artificial Intelligence is the science and engineering of making intelligent machines. The main idea
@@ -405,8 +403,7 @@ towards more advanced intelligence.
 </p>
 </div>
 
-<div class="section">
-<h2>Machine Learning (ML)</h2>
+<div class="section"><h2>Machine Learning (ML)</h2>
 
 <h3>Definition of Machine Learning</h3>
 
@@ -501,8 +498,7 @@ based on actions.
 </ul>
 </div>
 
-<div class="section">
-<h2>Deep Learning (DL)</h2>
+<div class="section"><h2>Deep Learning (DL)</h2>
 
 <h3>Definition of Deep Learning</h3>
 
@@ -551,8 +547,7 @@ and high computational power are required for effective learning.
 </ul>
 </div>
 
-<div class="section">
-<h2>Difference Between Machine Learning and Deep Learning</h2>
+<div class="section"><h2>Difference Between Machine Learning and Deep Learning</h2>
 
 <ul>
     <li>Machine Learning uses simpler models</li>
@@ -564,8 +559,7 @@ and high computational power are required for effective learning.
 </ul>
 </div>
 
-<div class="section">
-<h2>Advantages and Limitations</h2>
+<div class="section"><h2>Advantages and Limitations</h2>
 
 <h3>Advantages</h3>
 <ul>
@@ -584,8 +578,7 @@ and high computational power are required for effective learning.
 </ul>
 </div>
 
-<div class="section">
-<h2>Future Scope of ML and DL</h2>
+<div class="section"><h2>Future Scope of ML and DL</h2>
 
 <p>
 Machine Learning and Deep Learning have a promising future. These technologies will continue to
@@ -600,8 +593,7 @@ impact every industry and create new job opportunities.
 </ul>
 </div>
 
-<div class="conclusion">
-<h2>Conclusion</h2>
+<div class="conclusion"><h2>Conclusion</h2>
 
 <p>
 Machine Learning and Deep Learning are powerful technologies that form the foundation of modern
