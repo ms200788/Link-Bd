@@ -258,6 +258,7 @@ async def ad_page(slug: str, request: Request, db=Depends(get_db)):
         }}
         h1 {{
             color: #121212
+        }}
         ul {{
             margin-left: 25px;
         }}
