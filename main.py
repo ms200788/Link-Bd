@@ -246,100 +246,84 @@ async def ad_page(slug: str, request: Request, db=Depends(get_db)):
     <meta charset="UTF-8">
     <title>Machine Learning and Deep Learning in Artificial Intelligence</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <style>
-        body {
+        body {{
             font-family: Arial, Helvetica, sans-serif;
             line-height: 1.8;
             margin: 40px;
             background-color: #0f2027;
             color: #eaeaea;
-        }
-
-        h1, h2, h3, h4 {
+        }}
+        h1, h2, h3, h4 {{
             color: #0b3c5d;
-        }
-
-        ul {
+        }}
+     
+        ul {{
             margin-left: 25px;
-        }
-
-        .section {
+        }}
+        .section {{
             background: #ffffff;
             padding: 25px;
             margin-bottom: 30px;
             border-left: 6px solid #0b3c5d;
-            color: #000;
-        }
+        }}
+       .card {{
+         background:#ffffff;
+         color:#000000;
+    border-radius:16px;
+    padding:20px;
+    margin:16px;
+}}
+p {{
+    line-height:1.8;
+    margin:14px 0;
+    font-size:15px;
+}}
+.btn {{
+    background:#ff4b2b;
+    color:#fff;
+    border:none;
+    padding:14px;
+    width:100%;
+    border-radius:30px;
+    font-size:16px;
+}}
+.timer {{
+    text-align:center;
+    font-size:16px;
+    margin:20px 0;
+}}
+.ad {{
+    margin:24px 0;
+    text-align:center;
+.conclusion {{
+    background:#f0f3ff;
+    padding:20px;
+    border-left:5px solid #4a63ff;
+    border-radius:12px;
+}}
+.topbar {{
+    background: #b30000;
+    color: #fff;
+    padding: 12px 16px;
+    font-size: 20px;
+    font-weight: 700;
+}}
 
-        .card {
-            background: #ffffff;
-            color: #000000;
-            border-radius: 16px;
-            padding: 20px;
-            margin: 16px;
-        }
+</style>
 
-        p {
-            line-height: 1.8;
-            margin: 14px 0;
-            font-size: 15px;
-        }
-
-        .btn {
-            background: #ff4b2b;
-            color: #ffffff;
-            border: none;
-            padding: 14px;
-            width: 100%;
-            border-radius: 30px;
-            font-size: 16px;
-            cursor: pointer;
-        }
-
-        .timer {
-            text-align: center;
-            font-size: 16px;
-            margin: 20px 0;
-        }
-
-        .ad {
-            margin: 24px 0;
-            text-align: center;
-        }
-
-        .conclusion {
-            background: #f0f3ff;
-            padding: 20px;
-            border-left: 5px solid #4a63ff;
-            border-radius: 12px;
-            color: #000;
-        }
-
-        .topbar {
-            background: #b30000;
-            color: #ffffff;
-            padding: 12px 16px;
-            font-size: 20px;
-            font-weight: 700;
-        }
-    </style>
-
-    <script>
-        let t = 20;
-
-        let timer = setInterval(() => {
-            document.getElementById("t").innerText = t;
-
-            if (t <= 0) {
-                clearInterval(timer);
-                document.getElementById("continueBox").style.display = "block";
-                document.getElementById("timerText").innerText = "You can continue now";
-            }
-
-            t--;
-        }, 1000);
-    </script>
+<script>
+let t = 20;
+let timer = setInterval(() => {{
+    document.getElementById("t").innerText = t;
+    if (t <= 0) {{
+        clearInterval(timer);
+        document.getElementById("continueBox").style.display = "block";
+        document.getElementById("timerText").innerText = "You can continue now";
+    }}
+    t--;
+}}, 1000);
+</script>
 </head>
 
 <body>
