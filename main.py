@@ -249,7 +249,7 @@ async def ad_page(slug: str, request: Request, db=Depends(get_db)):
         body {{
             font-family: Arial, Helvetica, sans-serif;
             line-height: 1.8;
-            margin: 40px;
+            margin: 0;
             background-color: #0f2027;
             color: #eaeaea;
         }}
@@ -328,16 +328,16 @@ let timer = setInterval(() => {{
 <body>
 
 <div class="topbar">𝘼𝙄 - 𝙈𝙇 & 𝘿𝙇</div>
+
 <div class="card">
 
 
-<h1>Artificial Intelligence (AI) – A Simple and Complete Guide</h1>
+<h1>Machine Learning (ML) and Deep Learning (DL) in Artificial Intelligence</h1>
 
 <div class="timer">
 <p id="timerText">Please wait <b id="t">20</b> seconds while content loads</p>
 </div>
 
-<h1>Machine Learning (ML) and Deep Learning (DL) in Artificial Intelligence</h1>
 
 <div class="section">
 <h2>Introduction</h2>
