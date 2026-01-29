@@ -254,7 +254,7 @@ async def ad_page(slug: str, request: Request, db=Depends(get_db)):
             color: #eaeaea;
         }}
         h1, h2, h3, h4 {{
-            color: #0b3c5d;
+            color: #4da3ff;
         }}
      
         ul {{
@@ -303,7 +303,7 @@ p {{
     border-radius:12px;
 }}
 .topbar {{
-    background: #4da3ff;
+    background: #121212;
     color: #fff;
     padding: 12px 16px;
     font-size: 20px;
