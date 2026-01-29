@@ -295,6 +295,7 @@ p {{
 .ad {{
     margin:24px 0;
     text-align:center;
+}}
 .conclusion {{
     background:#f0f3ff;
     padding:20px;
