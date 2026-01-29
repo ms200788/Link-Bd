@@ -10,7 +10,29 @@ from sqlalchemy.orm import sessionmaker, declarative_base
 # ================= CONFIG =================
 ADMIN_PASSWORD = os.getenv("ADMIN_PASSWORD", "changeme")
 DATABASE_URL = os.getenv("DATABASE_URL")
-BASE_URL = "https://fast-link-2cmx.onrender.com"
+BASE_URL =os.getenv("BASE_URL",  "https://fast-link-2cmx.onrender.com") 
+
+# ================= APP =================
+app = FastAPI()
+REQUEST_LOG = {}
+ADMIN_COOKIE = "admin_session"
+
+# ================= SECURITY HEADERS =================
+from fastapi import Response
+
+@app.middleware("http")
+async def security_headers(request: Request, call_next):
+    response: Response = await call_next(request)
+
+    response.headers["X-Frame-Options"] = "SAMEORIGIN"
+    response.headers["X-Content-Type-Options"] = "nosniff"
+    response.headers["Referrer-Policy"] = "no-referrer-when-downgrade"
+    response.headers["Content-Security-Policy"] = (
+        "default-src * 'unsafe-inline' 'unsafe-eval' data: blob:;"
+    )
+
+    return response
+
 
 # ================= DB SETUP =================
 engine = create_engine(
@@ -32,10 +54,8 @@ class Link(Base):
 
 Base.metadata.create_all(bind=engine)
 
-# ================= APP =================
-app = FastAPI()
-REQUEST_LOG = {}
-ADMIN_COOKIE = "admin_session"
+# ==================================
+
 
 # ================= HELPERS =================
 def get_db():
@@ -99,7 +119,14 @@ async def admin_do_login(password: str = Form(...)):
         raise HTTPException(status_code=403, detail="Forbidden: Wrong password")
     # Set cookie and redirect to admin panel
     response = RedirectResponse("/admin/panel", status_code=302)
-    response.set_cookie(key=ADMIN_COOKIE, value="true", max_age=86400, httponly=False)
+    response.set_cookie(
+    key=ADMIN_COOKIE,
+    value="true",
+    max_age=86400,
+    httponly=True,
+    secure=True,
+    samesite="Lax"
+)
     return response
 
 # ================= ADMIN PANEL =================
