@@ -264,7 +264,7 @@ async def ad_page(slug: str, request: Request, db=Depends(get_db)):
             background: #ffffff;
             padding: 25px;
             margin-bottom: 30px;
-            border-left: 6px solid #0b3c5d;
+            border-left: 6px solid #4da3ff;
         }}
        .card {{
          background:#ffffff;
@@ -279,8 +279,8 @@ p {{
     font-size:15px;
 }}
 .btn {{
-    background:#ff4b2b;
-    color:#fff;
+    background:#ffffff;
+    color:#4da3ff;
     border:none;
     padding:14px;
     width:100%;
@@ -303,7 +303,7 @@ p {{
     border-radius:12px;
 }}
 .topbar {{
-    background: #b30000;
+    background: #4da3ff;
     color: #fff;
     padding: 12px 16px;
     font-size: 20px;
