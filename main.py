@@ -408,6 +408,12 @@ towards more advanced intelligence.
 </p>
 </div>
 
+<div class="ad">
+<script async="async" data-cfasync="false"
+src="https://pl28575184.effectivegatecpm.com/f42c86f37946ef5ab59eb2d53980afa3/invoke.js"></script>
+<div id="container-f42c86f37946ef5ab59eb2d53980afa3"></div>
+</div>
+
 <div class="section"><h2>Machine Learning (ML)</h2>
 
 <h3>Definition of Machine Learning</h3>
