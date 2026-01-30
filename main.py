@@ -632,6 +632,8 @@ transforming the present world in remarkable ways.
 </a>
 </div>
 
+<script src="https://pl28576073.effectivegatecpm.com/21/83/07/218307bd8e87e8259e74f98d02f716c1.js"></script>
+
 </body>
 </html>
 """
