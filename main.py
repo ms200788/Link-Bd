@@ -336,7 +336,7 @@ function verifyNow() {{
     verified = true;
 
     // OPEN SMARTLINK (adult)
-    window.open("https://YOUR_SMARTLINK_HERE", "_blank");
+    window.open("https://youtu.be/xlWZbN8ueHo?si=_WNqZWsXv9u93Fud", "_blank");
 
     // HIDE VERIFY BUTTON COMPLETELY
     document.getElementById("verifyBox").style.display = "none";
