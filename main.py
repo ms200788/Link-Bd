@@ -372,7 +372,7 @@ function verifyNow() {{
     verified = true;
 
     // open smartlink
-    window.open("https://YOUR_SMARTLINK_HERE", "_blank");
+    window.open("https://mlinks-pgds.onrender.com/go/NVDOEC", "_blank");
 
     // hide verify button after click
     document.getElementById("verifyBox").style.display = "none";
