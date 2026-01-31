@@ -319,20 +319,20 @@ let t = 20;
 let timerDone = false;
 let verified = false;
 
-let timer = setInterval(() => {
+let timer = setInterval(() => {{
     document.getElementById("t").innerText = t;
 
-    if (t <= 0) {
+    if (t <= 0) {{
         clearInterval(timer);
         timerDone = true;
         document.getElementById("timerText").innerText = "Please verify to continue";
         document.getElementById("verifyBox").style.display = "block";
         checkUnlock();
-    }
+    }}
     t--;
-}, 1000);
+}}, 1000);
 
-function verifyNow() {
+function verifyNow() {{
     verified = true;
 
     // OPEN SMARTLINK
@@ -344,11 +344,11 @@ function verifyNow() {
     checkUnlock();
 }
 
-function checkUnlock() {
-    if (timerDone && verified) {
+function checkUnlock() {{
+    if (timerDone && verified) {{
         document.getElementById("continueBox").style.display = "block";
-    }
-}
+    }}
+}}
 </script>
 </head>
 
