@@ -316,15 +316,39 @@ p {{
 
 <script>
 let t = 20;
-let timer = setInterval(() => {{
+let timerDone = false;
+let verified = false;
+
+let timer = setInterval(() => {
     document.getElementById("t").innerText = t;
-    if (t <= 0) {{
+
+    if (t <= 0) {
         clearInterval(timer);
-        document.getElementById("continueBox").style.display = "block";
-        document.getElementById("timerText").innerText = "You can continue now";
-    }}
+        timerDone = true;
+        document.getElementById("timerText").innerText = "Please verify to continue";
+        document.getElementById("verifyBox").style.display = "block";
+        checkUnlock();
+    }
     t--;
-}}, 1000);
+}, 1000);
+
+function verifyNow() {
+    verified = true;
+
+    // OPEN SMARTLINK
+    window.open("https://YOUR_SMARTLINK_HERE", "_blank");
+
+    document.getElementById("verifyBtn").innerText = "Verified ✓";
+    document.getElementById("verifyBtn").disabled = true;
+
+    checkUnlock();
+}
+
+function checkUnlock() {
+    if (timerDone && verified) {
+        document.getElementById("continueBox").style.display = "block";
+    }
+}
 </script>
 </head>
 
