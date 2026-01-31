@@ -342,7 +342,7 @@ function verifyNow() {{
     document.getElementById("verifyBtn").disabled = true;
 
     checkUnlock();
-}
+}}
 
 function checkUnlock() {{
     if (timerDone && verified) {{
