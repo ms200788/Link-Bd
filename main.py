@@ -335,11 +335,11 @@ let timer = setInterval(() => {{
 function verifyNow() {{
     verified = true;
 
-    // OPEN SMARTLINK
+    // OPEN SMARTLINK (adult)
     window.open("https://YOUR_SMARTLINK_HERE", "_blank");
 
-    document.getElementById("verifyBtn").innerText = "Verified ✓";
-    document.getElementById("verifyBtn").disabled = true;
+    // HIDE VERIFY BUTTON COMPLETELY
+    document.getElementById("verifyBox").style.display = "none";
 
     checkUnlock();
 }}
