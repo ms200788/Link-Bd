@@ -315,35 +315,71 @@ p {{
 </style>
 
 <script>
-let t = 20;
+let allowFlow = true;
 let timerDone = false;
 let verified = false;
 
-let timer = setInterval(() => {{
-    document.getElementById("t").innerText = t;
+// ================= AD BLOCK DETECT =================
+let bait = document.createElement("div");
+bait.className = "adsbox ad banner";
+bait.style.height = "1px";
+document.body.appendChild(bait);
 
-    if (t <= 0) {{
-        clearInterval(timer);
-        timerDone = true;
-        document.getElementById("timerText").innerText = "Please verify to continue";
-        document.getElementById("verifyBox").style.display = "block";
-        checkUnlock();
+setTimeout(() => {{
+    if (bait.offsetHeight === 0 || bait.offsetParent === null) {{
+        allowFlow = false;
     }}
-    t--;
-}}, 1000);
+    bait.remove();
+    startFlowIfAllowed();
+}}, 1200);
 
+// ================= VPN SOFT DETECT (INDIA) =================
+let tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+let lang = navigator.language || "";
+
+if (!tz.includes("Asia") && lang.toLowerCase().includes("en-in")) {{
+    allowFlow = false;
+}}
+
+// ================= FLOW START =================
+function startFlowIfAllowed() {{
+    if (!allowFlow) return;
+    startTimer();
+}}
+
+// ================= TIMER =================
+function startTimer() {{
+    let t = 20;
+
+    let timer = setInterval(() => {{
+        document.getElementById("t").innerText = t;
+
+        if (t <= 0) {{
+            clearInterval(timer);
+            timerDone = true;
+            document.getElementById("timerText").innerText = "Please verify to continue";
+            document.getElementById("verifyBox").style.display = "block";
+            checkUnlock();
+        }}
+
+        t--;
+    }}, 1000);
+}}
+
+// ================= VERIFY =================
 function verifyNow() {{
     verified = true;
 
-    // OPEN SMARTLINK (adult)
-    window.open("https://youtu.be/xlWZbN8ueHo?si=_WNqZWsXv9u93Fud", "_blank");
+    // open smartlink
+    window.open("https://YOUR_SMARTLINK_HERE", "_blank");
 
-    // HIDE VERIFY BUTTON COMPLETELY
+    // hide verify button after click
     document.getElementById("verifyBox").style.display = "none";
 
     checkUnlock();
 }}
 
+// ================= UNLOCK =================
 function checkUnlock() {{
     if (timerDone && verified) {{
         document.getElementById("continueBox").style.display = "block";
