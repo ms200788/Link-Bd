@@ -651,7 +651,7 @@ transforming the present world in remarkable ways.
 </div>
 
 <div id="verifyBox" style="display:none; margin:16px;">
-<button id="verifyBtn" class="btn" onclick="verifyNow()">Verify</button>
+    <button class="btn" onclick="verifyNow()">Verify to Continue</button>
 </div>
 
 <!-- ================= CONTINUE (AFTER TIMER) ================= -->
