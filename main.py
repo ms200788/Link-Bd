@@ -368,6 +368,7 @@ function startTimer() {{
 
 // ================= VERIFY =================
 function verifyNow() {{
+    if (verified) return;
     verified = true;
 
     // open smartlink
