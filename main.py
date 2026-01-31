@@ -649,6 +649,11 @@ transforming the present world in remarkable ways.
 </p>
 </div>
 </div>
+
+<div id="verifyBox" style="display:none; margin:16px;">
+<button id="verifyBtn" class="btn" onclick="verifyNow()">Verify</button>
+</div>
+
 <!-- ================= CONTINUE (AFTER TIMER) ================= -->
 <div id="continueBox" style="display:none; margin:16px;">
 <a href="{BASE_URL}/redirect/{slug}">
