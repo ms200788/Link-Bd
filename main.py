@@ -537,6 +537,7 @@ transforming the present world in remarkable ways.
 
 </body>
 </html>
+"""
 
 @app.get("/{redirect}/{slug}")
 async def redirect_page(redirect: str, slug: str):
