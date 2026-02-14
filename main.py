@@ -528,7 +528,7 @@ transforming the present world in remarkable ways.
 </div>
 
 <div id="continueBox" style="display:none; margin:16px;">
-<a href="{BASE_URL}/redirect/{slug}">
+<a href="{BASE_URL}/{redirect_key}/{slug}">
 <button class="btn">Continue</button>
 </a>
 </div>
