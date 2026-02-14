@@ -15,7 +15,7 @@ OWNER_ID = int(os.getenv("OWNER_ID"))
 CHANNEL_ID = os.getenv("CHANNEL_ID")  # <- ADDED
 BASE_URL = os.getenv("BASE_URL")
 
-DB_FILE = "funnel.db"
+DB_FILE = "database.txt"
 
 # ================= DATABASE =================
 def init_db():
