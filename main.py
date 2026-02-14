@@ -8,172 +8,193 @@ from fastapi import FastAPI, Request, Form, HTTPException
 from fastapi.responses import HTMLResponse, RedirectResponse
 
 # ================= CONFIG =================
+
 ADMIN_PASSWORD = os.getenv("ADMIN_PASSWORD", "changeme")
 BASE_URL = os.getenv("BASE_URL", "https://your-domain.com")
 
 BOT_TOKEN = os.getenv("BOT_TOKEN")
-CHANNEL_ID = os.getenv("CHANNEL_ID")
+OWNER_ID = os.getenv("OWNER_ID")  # Your Telegram numeric ID
 
 DATABASE_FILE = "database.txt"
 
-# ================= APP =================
 app = FastAPI()
 ADMIN_COOKIE = "admin_session"
 
-# ================= HELPERS =================
+# ================= UTILITIES =================
 
-def check_admin_cookie(request: Request):
-    cookie = request.cookies.get(ADMIN_COOKIE)
-    if cookie != "true":
-        raise HTTPException(status_code=403, detail="Forbidden: Admin only")
-
-# ✅ 8 CHARACTER SLUG
 def generate_slug(length=8):
     chars = string.ascii_uppercase + string.digits
     return "".join(random.choice(chars) for _ in range(length))
 
-def save_slug(slug, target):
-    with open(DATABASE_FILE, "a") as f:
-        f.write(f"{slug} - {target}\n")
+def generate_token(length=12):
+    chars = string.ascii_letters + string.digits
+    return "".join(random.choice(chars) for _ in range(length))
 
-def get_target_from_file(slug):
+def save_funnel(slug, token, target):
+    with open(DATABASE_FILE, "a") as f:
+        f.write(f"{slug}|{token}|{target}\n")
+
+def get_funnel(slug):
     if not os.path.exists(DATABASE_FILE):
         return None
 
     with open(DATABASE_FILE, "r") as f:
         for line in f:
-            if line.startswith(slug + " - "):
-                return line.strip().split(" - ", 1)[1]
+            parts = line.strip().split("|")
+            if len(parts) == 3 and parts[0] == slug:
+                return {
+                    "slug": parts[0],
+                    "token": parts[1],
+                    "target": parts[2]
+                }
     return None
 
-# ================= TELEGRAM =================
+def check_admin(request: Request):
+    if request.cookies.get(ADMIN_COOKIE) != "true":
+        raise HTTPException(status_code=403)
 
-def send_to_telegram(message):
-    if not BOT_TOKEN or not CHANNEL_ID:
+# ================= TELEGRAM BOT (OWNER ONLY) =================
+
+def send_message(chat_id, text):
+    if not BOT_TOKEN:
         return
 
     url = f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage"
-
     data = urllib.parse.urlencode({
-        "chat_id": CHANNEL_ID,
-        "text": message
+        "chat_id": chat_id,
+        "text": text
     }).encode()
 
     req = urllib.request.Request(url, data=data)
     urllib.request.urlopen(req)
 
 
-def get_target_from_channel(slug):
-    if not BOT_TOKEN:
-        return None
+@app.post("/webhook")
+async def telegram_webhook(request: Request):
+    data = await request.json()
 
-    url = f"https://api.telegram.org/bot{BOT_TOKEN}/getUpdates"
+    if "message" not in data:
+        return {"ok": True}
 
-    try:
-        with urllib.request.urlopen(url) as response:
-            data = json.loads(response.read().decode())
-    except:
-        return None
+    message = data["message"]
+    user_id = str(message["from"]["id"])
+    chat_id = str(message["chat"]["id"])
+    text = message.get("text", "")
 
-    if not data.get("ok"):
-        return None
+    # 🔒 Only owner can create funnel
+    if user_id != OWNER_ID:
+        send_message(chat_id, "❌ Not authorized.")
+        return {"ok": True}
 
-    for update in data.get("result", []):
-        message = update.get("channel_post") or update.get("message")
-        if message:
-            text = message.get("text", "")
-            if text.startswith(slug + " - "):
-                return text.split(" - ", 1)[1]
+    if text.startswith("/create "):
+        target = text.replace("/create ", "").strip()
 
-    return None
+        slug = generate_slug()
+        while get_funnel(slug):
+            slug = generate_slug()
 
+        token = generate_token()
 
-def get_target(slug):
-    # 1️⃣ Check file first
-    target = get_target_from_file(slug)
-    if target:
-        return target
+        save_funnel(slug, token, target)
 
-    # 2️⃣ If not found, check telegram channel
-    return get_target_from_channel(slug)
+        full_link = f"{BASE_URL}/{slug}"
 
+        send_message(chat_id, f"✅ Funnel Created:\n{full_link}")
+
+    return {"ok": True}
 
 # ================= HOME =================
+
 @app.get("/", response_class=HTMLResponse)
 async def home():
-    return "<h2 style='text-align:center'>Fast Link Gateway</h2>"
-
+    return "<h2 style='text-align:center'>Fast Link Gateway Running</h2>"
 
 # ================= ADMIN LOGIN =================
+
 @app.get("/admin", response_class=HTMLResponse)
 async def admin_login():
     return """
-    <form method="post" action="/admin/login">
-        <input type="password" name="password" placeholder="Admin password">
-        <button>Login</button>
-    </form>
+    <div style="display:flex;justify-content:center;align-items:center;height:100vh;font-family:sans-serif">
+        <form method="post" action="/admin/login" style="width:320px">
+            <h3>Admin Login</h3>
+            <input type="password" name="password" placeholder="Password"
+            style="width:100%;padding:12px;margin:10px 0">
+            <button style="width:100%;padding:12px">Login</button>
+        </form>
+    </div>
     """
-
 
 @app.post("/admin/login")
 async def admin_do_login(password: str = Form(...)):
     if password != ADMIN_PASSWORD:
-        raise HTTPException(status_code=403, detail="Forbidden: Wrong password")
+        raise HTTPException(status_code=403)
 
     response = RedirectResponse("/admin/panel", status_code=302)
-    response.set_cookie(
-        key=ADMIN_COOKIE,
-        value="true",
-        max_age=86400,
-        httponly=True
-    )
+    response.set_cookie(key=ADMIN_COOKIE, value="true", max_age=86400, httponly=True)
     return response
 
-
 # ================= ADMIN PANEL =================
+
 @app.get("/admin/panel", response_class=HTMLResponse)
 async def admin_panel(request: Request):
-    check_admin_cookie(request)
+    check_admin(request)
 
     return """
-    <h3>Create Funnel Link</h3>
-    <form method="post" action="/admin/create">
-        <input type="url" name="target" placeholder="Target URL" required>
-        <button>Create</button>
-    </form>
+    <div style="max-width:500px;margin:auto;padding:20px;font-family:sans-serif">
+        <h2>Create Funnel</h2>
+        <form method="post" action="/admin/create">
+            <input type="url" name="target" placeholder="Target URL" required
+            style="width:100%;padding:12px;margin-bottom:12px">
+            <button style="width:100%;padding:12px">Create</button>
+        </form>
+    </div>
     """
-
 
 @app.post("/admin/create", response_class=HTMLResponse)
 async def admin_create(request: Request, target: str = Form(...)):
-    check_admin_cookie(request)
+    check_admin(request)
 
     slug = generate_slug()
-
-    while get_target(slug):
+    while get_funnel(slug):
         slug = generate_slug()
 
-    save_slug(slug, target)
+    token = generate_token()
 
-    full_url = f"{BASE_URL}/go/{slug}"
+    save_funnel(slug, token, target)
 
-    send_to_telegram(f"{slug} - {target}")
+    full_link = f"{BASE_URL}/{slug}"
 
     return f"""
-    <h3>Link Created</h3>
-    <input value="{full_url}" readonly style="width:100%">
-    <br><br>
-    <a href="/admin/panel">Back</a>
+    <div style="max-width:500px;margin:auto;padding:20px;font-family:sans-serif">
+        <h3>Link Created</h3>
+        <input id="linkBox" value="{full_link}" readonly
+        style="width:100%;padding:10px;margin-bottom:10px">
+        <button onclick="copyLink()" style="width:100%;padding:10px">Copy</button>
+        <br><br>
+        <a href="/admin/panel">Back</a>
+    </div>
+
+    <script>
+    function copyLink() {{
+        var copyText = document.getElementById("linkBox");
+        copyText.select();
+        document.execCommand("copy");
+        alert("Copied!");
+    }}
+    </script>
     """
 
+# ================= USER AD PAGE =================
 
-# ================= USER PAGE =================
-@app.get("/go/{slug}", response_class=HTMLResponse)
-async def go_page(slug: str):
-    target = get_target(slug)
+@app.get("/{slug}", response_class=HTMLResponse)
+async def user_page(slug: str):
 
-    if not target:
+    data = get_funnel(slug)
+
+    if not data:
         return HTMLResponse("Invalid link", status_code=404)
+
+    token = data["token"]
 
     return f"""
         <!DOCTYPE html>
@@ -615,13 +636,17 @@ transforming the present world in remarkable ways.
 </html>
 """
 
+# ================= FINAL SECURE REDIRECT =================
 
-# ================= FINAL REDIRECT =================
-@app.get("/redirect/{slug}")
-async def final_redirect(slug: str):
-    target = get_target(slug)
+@app.get("/{token}/{slug}")
+async def final_redirect(token: str, slug: str):
 
-    if not target:
+    data = get_funnel(slug)
+
+    if not data:
         return RedirectResponse("/")
 
-    return RedirectResponse(target)
+    if data["token"] != token:
+        return RedirectResponse("/")
+
+    return RedirectResponse(data["target"])
