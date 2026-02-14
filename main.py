@@ -15,10 +15,19 @@ OWNER_ID = int(os.getenv("OWNER_ID"))
 CHANNEL_ID = os.getenv("CHANNEL_ID")  # <- ADDED
 BASE_URL = os.getenv("BASE_URL")
 
-DB_FILE = "database.txt"
+DB_FILE = "database.db"
 
 # ================= DATABASE =================
 def init_db():
+    # If file exists but is corrupted, delete it
+    if os.path.exists(DB_FILE):
+        try:
+            conn = sqlite3.connect(DB_FILE)
+            conn.execute("SELECT name FROM sqlite_master LIMIT 1;")
+            conn.close()
+        except sqlite3.DatabaseError:
+            os.remove(DB_FILE)
+
     conn = sqlite3.connect(DB_FILE)
     c = conn.cursor()
     c.execute("""
@@ -30,7 +39,6 @@ def init_db():
     """)
     conn.commit()
     conn.close()
-
 init_db()
 
 def generate_slug():
