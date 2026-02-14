@@ -106,41 +106,41 @@ async def user_page(slug: str):
 <meta name="viewport" content="width=device-width, initial-scale=1.0">  
 
 <style>
-body {
+body {{
     font-family: Arial, Helvetica, sans-serif;
     line-height: 1.8;
     margin: 0;
     background-color: #0f2027;
     color: #eaeaea;
-}
+}}
 
-h2, h3, h4 { color: #4da3ff; }
-h1 { color: #121212 }
+h2, h3, h4 {{ color: #4da3ff; }}
+h1 {{ color: #121212 }}
 
-ul { margin-left: 25px; }
+ul {{ margin-left: 25px; }}
 
-.section {
+.section {{
     background: #ffffff;
     padding: 25px;
     margin-bottom: 30px;
     border-left: 6px solid #4da3ff;
-}
+}}
 
-.card {
+.card {{
     background:#ffffff;
     color:#000000;
     border-radius:16px;
     padding:20px;
     margin:16px;
-}
+}}
 
-p {
+p {{
     line-height:1.8;
     margin:14px 0;
     font-size:15px;
-}
+}}
 
-.btn {
+.btn {{
     background:#ffffff;
     color:#4da3ff;
     border:none;
@@ -148,33 +148,33 @@ p {
     width:100%;
     border-radius:30px;
     font-size:16px;
-}
+}}
 
-.timer {
+.timer {{
     text-align:center;
     font-size:16px;
     margin:20px 0;
-}
+}}
 
-.ad {
+.ad {{
     margin:24px 0;
     text-align:center;
-}
+}}
 
-.conclusion {
+.conclusion {{
     background:#f0f3ff;
     padding:20px;
     border-left:5px solid #4a63ff;
     border-radius:12px;
-}
+}}
 
-.topbar {
+.topbar {{
     background: #121212;
     color: #fff;
     padding: 12px 16px;
     font-size: 20px;
     font-weight: 700;
-}
+}}
 </style>
 
 <script>
@@ -182,30 +182,30 @@ let timerDone = false;
 let verified = false;
 
 // ================= TIMER =================
-function startTimer() {
+function startTimer() {{
     let t = 20;
 
-    let timer = setInterval(() => {
+    let timer = setInterval(() => {{
         document.getElementById("t").innerText = t;
 
-        if (t <= 0) {
+        if (t <= 0) {{
             clearInterval(timer);
             timerDone = true;
             document.getElementById("timerText").innerText = "Please verify to continue";
             document.getElementById("verifyBox").style.display = "block";
             checkUnlock();
-        }
+        }}
 
         t--;
-    }, 1000);
-}
+    }}, 1000);
+}}
 
-window.onload = function() {
+window.onload = function() {{
     startTimer();
-};
+}};
 
 // ================= VERIFY =================
-function verifyNow() {
+function verifyNow() {{
     if (verified) return;
     verified = true;
 
@@ -214,14 +214,14 @@ function verifyNow() {
     document.getElementById("verifyBox").style.display = "none";
 
     checkUnlock();
-}
+}}
 
 // ================= UNLOCK =================
-function checkUnlock() {
-    if (timerDone && verified) {
+function checkUnlock() {{
+    if (timerDone && verified) {{
         document.getElementById("continueBox").style.display = "block";
-    }
-}
+    }}
+}}
 </script>
 </head>
 
