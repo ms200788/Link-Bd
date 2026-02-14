@@ -1,7 +1,9 @@
 import os
 import random
 import string
-import requests
+import urllib.request
+import urllib.parse
+import json
 from fastapi import FastAPI, Request, Form, HTTPException
 from fastapi.responses import HTMLResponse, RedirectResponse
 
@@ -10,7 +12,7 @@ ADMIN_PASSWORD = os.getenv("ADMIN_PASSWORD", "changeme")
 BASE_URL = os.getenv("BASE_URL", "https://your-domain.com")
 
 BOT_TOKEN = os.getenv("BOT_TOKEN")
-CHANNEL_ID = os.getenv("CHANNEL_ID")  # Example: -100xxxxxxxxxx
+CHANNEL_ID = os.getenv("CHANNEL_ID")
 
 DATABASE_FILE = "database.txt"
 
@@ -25,7 +27,7 @@ def check_admin_cookie(request: Request):
     if cookie != "true":
         raise HTTPException(status_code=403, detail="Forbidden: Admin only")
 
-# ✅ SLUG NOW 8 CHARACTERS
+# ✅ 8 CHARACTER SLUG
 def generate_slug(length=8):
     chars = string.ascii_uppercase + string.digits
     return "".join(random.choice(chars) for _ in range(length))
@@ -42,7 +44,6 @@ def get_target_from_file(slug):
         for line in f:
             if line.startswith(slug + " - "):
                 return line.strip().split(" - ", 1)[1]
-
     return None
 
 # ================= TELEGRAM =================
@@ -52,21 +53,27 @@ def send_to_telegram(message):
         return
 
     url = f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage"
-    data = {
+
+    data = urllib.parse.urlencode({
         "chat_id": CHANNEL_ID,
         "text": message
-    }
-    requests.post(url, data=data)
+    }).encode()
+
+    req = urllib.request.Request(url, data=data)
+    urllib.request.urlopen(req)
 
 
-# ✅ CHECK CHANNEL IF NOT IN FILE
 def get_target_from_channel(slug):
     if not BOT_TOKEN:
         return None
 
     url = f"https://api.telegram.org/bot{BOT_TOKEN}/getUpdates"
-    response = requests.get(url)
-    data = response.json()
+
+    try:
+        with urllib.request.urlopen(url) as response:
+            data = json.loads(response.read().decode())
+    except:
+        return None
 
     if not data.get("ok"):
         return None
@@ -150,7 +157,6 @@ async def admin_create(request: Request, target: str = Form(...)):
 
     full_url = f"{BASE_URL}/go/{slug}"
 
-    # Send to telegram
     send_to_telegram(f"{slug} - {target}")
 
     return f"""
@@ -170,7 +176,7 @@ async def go_page(slug: str):
         return HTMLResponse("Invalid link", status_code=404)
 
     return f"""
-    <!DOCTYPE html>
+        <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -634,6 +640,7 @@ transforming the present world in remarkable ways.
 </body>
 </html>
 """
+
 
 
 # ================= FINAL REDIRECT =================
