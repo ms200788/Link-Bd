@@ -10,17 +10,16 @@ from fastapi.responses import HTMLResponse, RedirectResponse
 app = FastAPI()
 
 # ================= CONFIG =================
-BOT_TOKEN = os.getenv("BOT_TOKEN")
-OWNER_ID = int(os.getenv("OWNER_ID"))
-CHANNEL_ID = os.getenv("CHANNEL_ID")  # <- ADDED
-BASE_URL = os.getenv("BASE_URL")
+BOT_TOKEN = os.getenv("BOT_TOKEN", "")
+OWNER_ID = int(os.getenv("OWNER_ID", "0"))
+CHANNEL_ID = os.getenv("CHANNEL_ID", "")
+BASE_URL = os.getenv("BASE_URL", "").rstrip("/")
 
 DB_FILE = "database.db"
 TXT_FILE = "database.txt"
 
 # ================= DATABASE =================
 def init_db():
-    # If file exists but is corrupted, delete it
     if os.path.exists(DB_FILE):
         try:
             conn = sqlite3.connect(DB_FILE)
@@ -29,19 +28,18 @@ def init_db():
         except sqlite3.DatabaseError:
             os.remove(DB_FILE)
 
-    conn = sqlite3.connect(DB_FILE)
+    conn = sqlite3.connect(DB_FILE, check_same_thread=False)
     c = conn.cursor()
     c.execute("""
         CREATE TABLE IF NOT EXISTS funnels (
             slug TEXT PRIMARY KEY,
             redirect TEXT UNIQUE,
-            link TEXT
+            link TEXT NOT NULL
         )
     """)
     conn.commit()
     conn.close()
 
-    # 🔥 Load permanent TXT data into temporary DB
     load_txt_into_db()
 
 
@@ -49,7 +47,7 @@ def load_txt_into_db():
     if not os.path.exists(TXT_FILE):
         return
 
-    conn = sqlite3.connect(DB_FILE)
+    conn = sqlite3.connect(DB_FILE, check_same_thread=False)
     c = conn.cursor()
 
     with open(TXT_FILE, "r") as f:
@@ -57,13 +55,10 @@ def load_txt_into_db():
             parts = line.strip().split("|")
             if len(parts) == 3:
                 slug, redirect, link = parts
-                try:
-                    c.execute(
-                        "INSERT OR IGNORE INTO funnels (slug, redirect, link) VALUES (?, ?, ?)",
-                        (slug, redirect, link)
-                    )
-                except:
-                    pass
+                c.execute(
+                    "INSERT OR IGNORE INTO funnels (slug, redirect, link) VALUES (?, ?, ?)",
+                    (slug.strip(), redirect.strip(), link.strip())
+                )
 
     conn.commit()
     conn.close()
@@ -81,15 +76,18 @@ def generate_redirect():
 
 
 def save_funnel(slug, redirect, link):
-    conn = sqlite3.connect(DB_FILE)
+    conn = sqlite3.connect(DB_FILE, check_same_thread=False)
     c = conn.cursor()
-    c.execute("INSERT INTO funnels VALUES (?, ?, ?)", (slug, redirect, link))
-    conn.commit()
+    try:
+        c.execute("INSERT INTO funnels VALUES (?, ?, ?)", (slug, redirect, link))
+        conn.commit()
+    except sqlite3.IntegrityError:
+        pass
     conn.close()
 
 
 def get_by_slug(slug):
-    conn = sqlite3.connect(DB_FILE)
+    conn = sqlite3.connect(DB_FILE, check_same_thread=False)
     c = conn.cursor()
     c.execute("SELECT * FROM funnels WHERE slug=?", (slug,))
     data = c.fetchone()
@@ -98,12 +96,14 @@ def get_by_slug(slug):
 
 
 def get_by_redirect(redirect, slug):
-    conn = sqlite3.connect(DB_FILE)
+    conn = sqlite3.connect(DB_FILE, check_same_thread=False)
     c = conn.cursor()
     c.execute("SELECT * FROM funnels WHERE redirect=? AND slug=?", (redirect, slug))
     data = c.fetchone()
     conn.close()
     return data
+
+
 # ================= TELEGRAM =================
 def send_message(chat_id, text):
     if not BOT_TOKEN:
@@ -115,7 +115,11 @@ def send_message(chat_id, text):
         "text": text
     }).encode()
 
-    urllib.request.urlopen(urllib.request.Request(url, data=data))
+    try:
+        urllib.request.urlopen(urllib.request.Request(url, data=data), timeout=10)
+    except:
+        pass
+
 
 def send_to_channel(text):
     if not BOT_TOKEN or not CHANNEL_ID:
@@ -127,7 +131,11 @@ def send_to_channel(text):
         "text": text
     }).encode()
 
-    urllib.request.urlopen(urllib.request.Request(url, data=data))
+    try:
+        urllib.request.urlopen(urllib.request.Request(url, data=data), timeout=10)
+    except:
+        pass
+
 
 # ================= USER ROUTES =================
 
@@ -140,7 +148,7 @@ async def user_page(slug: str):
     redirect = funnel[1]
 
     return f"""
-    <!DOCTYPE html>  
+        <!DOCTYPE html>  
 <html lang="en">  
 <head>  
 <meta charset="UTF-8">  
@@ -581,6 +589,7 @@ transforming the present world in remarkable ways.
 </html>
 """
 
+
 @app.get("/{redirect}/{slug}")
 async def redirect_page(redirect: str, slug: str):
     funnel = get_by_redirect(redirect, slug)
@@ -588,6 +597,7 @@ async def redirect_page(redirect: str, slug: str):
         return HTMLResponse("Invalid Link", status_code=403)
 
     return RedirectResponse(funnel[2])
+
 
 # ================= TELEGRAM WEBHOOK =================
 
@@ -614,14 +624,23 @@ async def webhook(req: Request):
             send_message(chat_id, "Usage:\n/create https://example.com")
             return {"ok": True}
 
-        link = parts[1]
-        slug = generate_slug()
-        redirect = generate_redirect()
+        link = parts[1].strip()
+
+        # Safe unique generation
+        for _ in range(5):
+            slug = generate_slug()
+            redirect = generate_redirect()
+            if not get_by_slug(slug):
+                break
+        else:
+            send_message(chat_id, "Failed to generate unique slug.")
+            return {"ok": True}
 
         save_funnel(slug, redirect, link)
 
-        # SEND BACKUP TO CHANNEL
-        send_to_channel(f"{slug}|{redirect}|{link}")
+        # 🔥 ONLY BACKUP FORMAT
+        backup_line = f"{slug}|{redirect}|{link}"
+        send_to_channel(backup_line)
 
         send_message(chat_id, f"User URL:\n{BASE_URL}/{slug}")
         send_message(chat_id, f"Redirect URL:\n{BASE_URL}/{redirect}/{slug}")
