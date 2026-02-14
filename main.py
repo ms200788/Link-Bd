@@ -177,47 +177,48 @@ async def go_page(slug: str):
 
     return f"""
         <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Machine Learning and Deep Learning in Artificial Intelligence</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <style>
-        body {{
-            font-family: Arial, Helvetica, sans-serif;
-            line-height: 1.8;
-            margin: 0;
-            background-color: #0f2027;
-            color: #eaeaea;
-        }}
-        h2, h3, h4 {{
-            color: #4da3ff;
-        }}
-        h1 {{
-            color: #121212
-        }}
-        ul {{
-            margin-left: 25px;
-        }}
-        .section {{
-            background: #ffffff;
-            padding: 25px;
-            margin-bottom: 30px;
-            border-left: 6px solid #4da3ff;
-        }}
-       .card {{
-         background:#ffffff;
-         color:#000000;
+<html lang="en">  
+<head>  
+<meta charset="UTF-8">  
+<title>Machine Learning and Deep Learning in Artificial Intelligence</title>  
+<meta name="viewport" content="width=device-width, initial-scale=1.0">  
+
+<style>
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    line-height: 1.8;
+    margin: 0;
+    background-color: #0f2027;
+    color: #eaeaea;
+}
+
+h2, h3, h4 { color: #4da3ff; }
+h1 { color: #121212 }
+
+ul { margin-left: 25px; }
+
+.section {
+    background: #ffffff;
+    padding: 25px;
+    margin-bottom: 30px;
+    border-left: 6px solid #4da3ff;
+}
+
+.card {
+    background:#ffffff;
+    color:#000000;
     border-radius:16px;
     padding:20px;
     margin:16px;
-}}
-p {{
+}
+
+p {
     line-height:1.8;
     margin:14px 0;
     font-size:15px;
-}}
-.btn {{
+}
+
+.btn {
     background:#ffffff;
     color:#4da3ff;
     border:none;
@@ -225,104 +226,80 @@ p {{
     width:100%;
     border-radius:30px;
     font-size:16px;
-}}
-.timer {{
+}
+
+.timer {
     text-align:center;
     font-size:16px;
     margin:20px 0;
-}}
-.ad {{
+}
+
+.ad {
     margin:24px 0;
     text-align:center;
-}}
-.conclusion {{
+}
+
+.conclusion {
     background:#f0f3ff;
     padding:20px;
     border-left:5px solid #4a63ff;
     border-radius:12px;
-}}
-.topbar {{
+}
+
+.topbar {
     background: #121212;
     color: #fff;
     padding: 12px 16px;
     font-size: 20px;
     font-weight: 700;
-}}
-
+}
 </style>
 
 <script>
-let allowFlow = true;
 let timerDone = false;
 let verified = false;
 
-// ================= AD BLOCK DETECT =================
-let bait = document.createElement("div");
-bait.className = "adsbox ad banner";
-bait.style.height = "1px";
-document.body.appendChild(bait);
-
-setTimeout(() => {{
-    if (bait.offsetHeight === 0 || bait.offsetParent === null) {{
-        allowFlow = false;
-    }}
-    bait.remove();
-    startFlowIfAllowed();
-}}, 1200);
-
-// ================= VPN SOFT DETECT (INDIA) =================
-let tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
-let lang = navigator.language || "";
-
-if (!tz.includes("Asia") && lang.toLowerCase().includes("en-in")) {{
-    allowFlow = false;
-}}
-
-// ================= FLOW START =================
-function startFlowIfAllowed() {{
-    if (!allowFlow) return;
-    startTimer();
-}}
-
 // ================= TIMER =================
-function startTimer() {{
+function startTimer() {
     let t = 20;
 
-    let timer = setInterval(() => {{
+    let timer = setInterval(() => {
         document.getElementById("t").innerText = t;
 
-        if (t <= 0) {{
+        if (t <= 0) {
             clearInterval(timer);
             timerDone = true;
             document.getElementById("timerText").innerText = "Please verify to continue";
             document.getElementById("verifyBox").style.display = "block";
             checkUnlock();
-        }}
+        }
 
         t--;
-    }}, 1000);
-}}
+    }, 1000);
+}
+
+window.onload = function() {
+    startTimer();
+};
 
 // ================= VERIFY =================
-function verifyNow() {{
+function verifyNow() {
     if (verified) return;
     verified = true;
 
-    // open smartlink
     window.open("https://mlinks-pgds.onrender.com/go/NVDOEC", "_blank");
 
-    // hide verify button after click
     document.getElementById("verifyBox").style.display = "none";
 
     checkUnlock();
-}}
+}
 
 // ================= UNLOCK =================
-function checkUnlock() {{
-    if (timerDone && verified) {{
+function checkUnlock() {
+    if (timerDone && verified) {
         document.getElementById("continueBox").style.display = "block";
-    }}
-}}
+    }
+}
 </script>
 </head>
 
@@ -334,13 +311,11 @@ function checkUnlock() {{
 
 <div class="card">
 
-
 <h1>Machine Learning (ML) and Deep Learning (DL) in Artificial Intelligence</h1>
 
 <div class="timer">
 <p id="timerText">Please wait <b id="t">20</b> seconds while content loads</p>
 </div>
-
 
 <div class="section"><h2>Introduction</h2>
 
@@ -625,10 +600,9 @@ transforming the present world in remarkable ways.
 </div>
 
 <div id="verifyBox" style="display:none; margin:16px;">
-    <button class="btn" onclick="verifyNow()">Verify to Continue</button>
+<button class="btn" onclick="verifyNow()">Verify to Continue</button>
 </div>
 
-<!-- ================= CONTINUE (AFTER TIMER) ================= -->
 <div id="continueBox" style="display:none; margin:16px;">
 <a href="{BASE_URL}/redirect/{slug}">
 <button class="btn">Continue</button>
@@ -640,7 +614,6 @@ transforming the present world in remarkable ways.
 </body>
 </html>
 """
-
 
 
 # ================= FINAL REDIRECT =================
