@@ -16,6 +16,7 @@ CHANNEL_ID = os.getenv("CHANNEL_ID")  # <- ADDED
 BASE_URL = os.getenv("BASE_URL")
 
 DB_FILE = "database.db"
+TXT_FILE = "database.txt"
 
 # ================= DATABASE =================
 def init_db():
@@ -39,13 +40,45 @@ def init_db():
     """)
     conn.commit()
     conn.close()
+
+    # 🔥 Load permanent TXT data into temporary DB
+    load_txt_into_db()
+
+
+def load_txt_into_db():
+    if not os.path.exists(TXT_FILE):
+        return
+
+    conn = sqlite3.connect(DB_FILE)
+    c = conn.cursor()
+
+    with open(TXT_FILE, "r") as f:
+        for line in f:
+            parts = line.strip().split("|")
+            if len(parts) == 3:
+                slug, redirect, link = parts
+                try:
+                    c.execute(
+                        "INSERT OR IGNORE INTO funnels (slug, redirect, link) VALUES (?, ?, ?)",
+                        (slug, redirect, link)
+                    )
+                except:
+                    pass
+
+    conn.commit()
+    conn.close()
+
+
 init_db()
+
 
 def generate_slug():
     return ''.join(secrets.choice(string.ascii_uppercase + string.digits) for _ in range(8))
 
+
 def generate_redirect():
     return ''.join(secrets.choice(string.ascii_letters + string.digits) for _ in range(12))
+
 
 def save_funnel(slug, redirect, link):
     conn = sqlite3.connect(DB_FILE)
@@ -53,6 +86,7 @@ def save_funnel(slug, redirect, link):
     c.execute("INSERT INTO funnels VALUES (?, ?, ?)", (slug, redirect, link))
     conn.commit()
     conn.close()
+
 
 def get_by_slug(slug):
     conn = sqlite3.connect(DB_FILE)
@@ -62,6 +96,7 @@ def get_by_slug(slug):
     conn.close()
     return data
 
+
 def get_by_redirect(redirect, slug):
     conn = sqlite3.connect(DB_FILE)
     c = conn.cursor()
@@ -69,7 +104,6 @@ def get_by_redirect(redirect, slug):
     data = c.fetchone()
     conn.close()
     return data
-
 # ================= TELEGRAM =================
 def send_message(chat_id, text):
     if not BOT_TOKEN:
