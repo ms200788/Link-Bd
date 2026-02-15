@@ -117,11 +117,11 @@ function startTimer() {{
         t--;
     }}, 1000);
 }}
-window.onload = function(){ startTimer(); };
+window.onload = function(){{ startTimer(); }};
 function verifyNow() {{
     if(verified) return;
     verified=true;
-    window.open("https://mlinks-pgds.onrender.com/go/NVDOEC","_blank");
+    window.open("{BASE_URL}/go/NVDOEC","_blank");
     document.getElementById("verifyBox").style.display="none";
     checkUnlock();
 }}
