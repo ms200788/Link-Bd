@@ -74,6 +74,36 @@ async def send_to_channel(text):
     except:
         pass
 
+
+
+# ================= HEALTH CHECK =================
+
+@app.get("/health")
+async def health_check():
+    return JSONResponse({
+        "status": "ok",
+        "service": "crypto-funnel",
+        "timestamp": int(time.time())
+    })
+
+
+# ================= SELF PING =================
+
+async def self_ping():
+    await asyncio.sleep(10)
+    while True:
+        try:
+            async with httpx.AsyncClient() as client:
+                await client.get(f"{BASE_URL}/health")
+        except:
+            pass
+        await asyncio.sleep(240)  # every 4 minutes
+
+
+@app.on_event("startup")
+async def startup_event():
+    asyncio.create_task(self_ping())
+
 # ================= USER ROUTES =================
 @app.get("/{slug}", response_class=HTMLResponse)
 async def user_page(slug: str):
@@ -289,30 +319,3 @@ async def webhook(req: Request):
     return {"ok": True}
 
 
-# ================= HEALTH CHECK =================
-
-@app.get("/health")
-async def health_check():
-    return JSONResponse({
-        "status": "ok",
-        "service": "crypto-funnel",
-        "timestamp": int(time.time())
-    })
-
-
-# ================= SELF PING =================
-
-async def self_ping():
-    await asyncio.sleep(10)
-    while True:
-        try:
-            async with httpx.AsyncClient() as client:
-                await client.get(f"{BASE_URL}/health")
-        except:
-            pass
-        await asyncio.sleep(240)  # every 4 minutes
-
-
-@app.on_event("startup")
-async def startup_event():
-    asyncio.create_task(self_ping())
