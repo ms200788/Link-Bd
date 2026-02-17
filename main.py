@@ -76,15 +76,10 @@ async def send_to_channel(text):
 
 
 
-# ================= HEALTH CHECK =================
-
+# ---------- HEALTH ----------
 @app.get("/health")
-async def health_check():
-    return JSONResponse({
-        "status": "ok",
-        "service": "crypto-funnel",
-        "timestamp": int(time.time())
-    })
+async def health():
+    return {"status": "alive"}
 
 
 # ================= SELF PING =================
