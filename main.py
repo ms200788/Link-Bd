@@ -120,9 +120,9 @@ body {{ font-family: Arial; line-height:1.8; margin:0; background:#0f2027; color
 h1,h2,h3,h4 {{ color:#eb36e8; }}
 .section {{ background:#fff; padding:25px; margin-bottom:30px; border-left:6px solid #eb36e8; }}
 .card {{ background:#fff; color:#000; border-radius:16px; padding:20px; margin:16px; }}
-.btn {{ background:#fff; color:#4da3ff; border:none; padding:14px; width:100%; border-radius:30px; font-size:16px; cursor:pointer; }}
+.btn {{ background:#eb36e8; color:#fff; border:none; padding:14px; width:100%; border-radius:30px; font-size:16px; cursor:pointer; }}
 .timer {{ text-align:center; font-size:16px; margin:20px 0; }}
-.conclusion {{ background:#f099ee; padding:20px; border-left:5px solid #eb36e8; border-radius:12px; }}
+.conclusion {{ background:#f5bfe7; padding:20px; border-left:5px solid #eb36e8; border-radius:12px; }}
 .topbar {{background:#121212; color:#fff; padding:12px 16px; font-size:20px; font-weight:700; }}
 </style>
 <script>
