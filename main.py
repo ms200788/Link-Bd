@@ -122,7 +122,7 @@ h1,h2,h3,h4 {{ color:#eb36e8; }}
 .card {{ background:#fff; color:#000; border-radius:16px; padding:20px; margin:16px; }}
 .btn {{ background:#fff; color:#4da3ff; border:none; padding:14px; width:100%; border-radius:30px; font-size:16px; cursor:pointer; }}
 .timer {{ text-align:center; font-size:16px; margin:20px 0; }}
-.conclusion {{ background:#eb36e8; padding:20px; border-left:5px solid #4a63ff; border-radius:12px; }}
+.conclusion {{ background:#f099ee; padding:20px; border-left:5px solid #eb36e8; border-radius:12px; }}
 .topbar {{background:#121212; color:#fff; padding:12px 16px; font-size:20px; font-weight:700; }}
 </style>
 <script>
@@ -135,7 +135,7 @@ function startTimer() {{
         if(t<=0) {{
             clearInterval(timer);
             timerDone=true;
-            document.getElementById("timerText").innerText="Please verify to continue";
+            document.getElementById("timerText").innerText="Scroll down to Verify";
             document.getElementById("verifyBox").style.display="block";
             checkUnlock();
         }}
@@ -160,9 +160,9 @@ function checkUnlock() {{
 <body>
 <div class="topbar">Boost Your Dating Life</div>
 <div class="card">
-<h1>Boost Your Dating Life & Attraction Skills</h1>
+<h1>𝗕𝗼𝗼𝘀𝘁 𝗬𝗼𝘂𝗿 𝗗𝗮𝘁𝗶𝗻𝗴 𝗟𝗶𝗳𝗲 & 𝗔𝘁𝘁𝗿𝗮𝗰𝘁𝗶𝗼𝗻 𝗦𝗸𝗶𝗹𝗹𝘀</h1>
 <div class="timer">
-<p id="timerText">Please wait <b id="t">20</b> seconds while content loads</p>
+<p id="timerText">Please wait <b id="t">20</b> seconds.We are loading...</p>
 </div>
 
 <div class="section">
