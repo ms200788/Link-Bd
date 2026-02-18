@@ -122,7 +122,7 @@ h1,h2,h3,h4 {{ color:#eb36e8; }}
 .card {{ background:#fff; color:#000; border-radius:16px; padding:20px; margin:16px; }}
 .btn {{ background:#eb36e8; color:#fff; border:none; padding:14px; width:100%; border-radius:30px; font-size:16px; cursor:pointer; }}
 .timer {{ text-align:center; font-size:16px; margin:20px 0; }}
-.conclusion {{ background:#f5bfe7; padding:20px; border-left:5px solid #eb36e8; border-radius:12px; }}
+.conclusion {{ background:#fde6fb; padding:20px; border-left:5px solid #eb36e8; border-radius:12px; }}
 .topbar {{background:#121212; color:#fff; padding:12px 16px; font-size:20px; font-weight:700; }}
 </style>
 <script>
