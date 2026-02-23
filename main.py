@@ -4,6 +4,7 @@ import string
 import asyncio
 import urllib.parse
 import urllib.request
+import json
 from fastapi import FastAPI, Request
 from fastapi.responses import HTMLResponse, RedirectResponse
 
@@ -18,10 +19,10 @@ BASE_URL = os.getenv("BASE_URL", "").rstrip("/")
 TXT_FILE = "database.txt"
 
 # ================= MEMORY STORAGE =================
-funnels = {}  # slug -> (redirect, link)
-lock = asyncio.Lock()  # concurrency lock
+funnels = {}
+lock = asyncio.Lock()
 
-# ================= LOAD DATA FROM TXT =================
+# ================= LOAD DATA =================
 if os.path.exists(TXT_FILE):
     with open(TXT_FILE, "r") as f:
         for line in f:
@@ -30,7 +31,7 @@ if os.path.exists(TXT_FILE):
                 slug, redirect, link = parts
                 funnels[slug] = (redirect, link)
 
-# ================= UTILITY FUNCTIONS =================
+# ================= UTILS =================
 def generate_slug():
     return ''.join(secrets.choice(string.ascii_uppercase + string.digits) for _ in range(8))
 
@@ -38,7 +39,6 @@ def generate_redirect():
     return ''.join(secrets.choice(string.ascii_letters + string.digits) for _ in range(12))
 
 async def save_funnel(slug, redirect, link):
-    """Save funnel to memory and append to TXT safely."""
     async with lock:
         funnels[slug] = (redirect, link)
         with open(TXT_FILE, "a") as f:
@@ -59,48 +59,102 @@ async def get_by_redirect(redirect, slug):
 async def send_message(chat_id, text):
     if not BOT_TOKEN:
         return
-    data = urllib.parse.urlencode({"chat_id": chat_id, "text": text}).encode()
+    data = urllib.parse.urlencode({
+        "chat_id": chat_id,
+        "text": text
+    }).encode()
     try:
-        urllib.request.urlopen(f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage", data=data, timeout=10)
+        urllib.request.urlopen(
+            f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage",
+            data=data,
+            timeout=10
+        )
     except:
         pass
 
 async def send_to_channel(text):
     if not BOT_TOKEN or not CHANNEL_ID:
         return
-    data = urllib.parse.urlencode({"chat_id": CHANNEL_ID, "text": text}).encode()
+    data = urllib.parse.urlencode({
+        "chat_id": CHANNEL_ID,
+        "text": text
+    }).encode()
     try:
-        urllib.request.urlopen(f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage", data=data, timeout=10)
+        urllib.request.urlopen(
+            f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage",
+            data=data,
+            timeout=10
+        )
     except:
         pass
 
+# ================= AUTO WEBHOOK SETUP =================
+async def setup_webhook():
+    if not BOT_TOKEN or not BASE_URL:
+        print("Missing BOT_TOKEN or BASE_URL")
+        return
+    try:
+        urllib.request.urlopen(
+            f"https://api.telegram.org/bot{BOT_TOKEN}/deleteWebhook",
+            timeout=10
+        )
+        webhook_url = f"{BASE_URL}/webhook"
+        response = urllib.request.urlopen(
+            f"https://api.telegram.org/bot{BOT_TOKEN}/setWebhook?url={webhook_url}",
+            timeout=10
+        )
+        result = json.loads(response.read().decode())
+        print("Webhook setup:", result)
+    except Exception as e:
+        print("Webhook setup failed:", e)
 
+@app.on_event("startup")
+async def startup_event():
+    await setup_webhook()
 
-# ---------- HEALTH ----------
+# ================= HEALTH =================
 @app.get("/health")
 async def health():
     return {"status": "alive"}
 
+# ================= WEBHOOK =================
+@app.post("/webhook")
+async def webhook(req: Request):
+    data = await req.json()
 
-# ================= SELF PING =================
+    if "message" not in data:
+        return {"ok": True}
 
-async def self_ping():
-    await asyncio.sleep(10)
-    while True:
-        try:
-            async with httpx.AsyncClient() as client:
-                await client.get(f"{BASE_URL}/health")
-        except:
-            pass
-        await asyncio.sleep(240)  # every 4 minutes
+    message = data["message"]
+    chat_id = message["chat"]["id"]
+    user_id = message["from"]["id"]
+    text = message.get("text", "")
 
+    if user_id != OWNER_ID:
+        await send_message(chat_id, "Not authorized.")
+        return {"ok": True}
 
-@app.on_event("startup")
-async def startup_event():
-    asyncio.create_task(self_ping())
+    if text.startswith("/create"):
+        parts = text.split(" ", 1)
+        if len(parts) != 2:
+            await send_message(chat_id, "Usage:\n/create https://example.com")
+            return {"ok": True}
 
-# ================= USER ROUTES =================
-@app.get("/{slug}", response_class=HTMLResponse)
+        link = parts[1].strip()
+
+        slug = generate_slug()
+        redirect = generate_redirect()
+        await save_funnel(slug, redirect, link)
+
+        await send_to_channel(f"{slug}|{redirect}|{link}")
+
+        await send_message(chat_id, f"User URL:\n{BASE_URL}/u/{slug}")
+        await send_message(chat_id, f"Redirect URL:\n{BASE_URL}/r/{redirect}/{slug}")
+
+    return {"ok": True}
+
+# ================= USER PAGE =================
+@app.get("/u/{slug}", response_class=HTMLResponse)
 async def user_page(slug: str):
     funnel = await get_by_slug(slug)
     if not funnel:
@@ -109,7 +163,7 @@ async def user_page(slug: str):
     redirect = funnel[0]
 
     return f"""
-    <!DOCTYPE html>
+      <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -259,58 +313,12 @@ function checkUnlock() {{
 </div>
 </body>
 </html>
-    """
+"""
 
-@app.get("/{redirect}/{slug}")
+# ================= REDIRECT =================
+@app.get("/r/{redirect}/{slug}")
 async def redirect_page(redirect: str, slug: str):
     funnel = await get_by_redirect(redirect, slug)
     if not funnel:
         return HTMLResponse("Invalid Link", status_code=403)
     return RedirectResponse(funnel[1])
-
-# ================= TELEGRAM WEBHOOK =================
-@app.post("/webhook")
-async def webhook(req: Request):
-    data = await req.json()
-
-    if "message" not in data:
-        return {"ok": True}
-
-    message = data["message"]
-    chat_id = message["chat"]["id"]
-    user_id = message["from"]["id"]
-    text = message.get("text", "")
-
-    if user_id != OWNER_ID:
-        await send_message(chat_id, "Not authorized.")
-        return {"ok": True}
-
-    if text.startswith("/create"):
-        parts = text.split(" ", 1)
-        if len(parts) != 2:
-            await send_message(chat_id, "Usage:\n/create https://example.com")
-            return {"ok": True}
-
-        link = parts[1].strip()
-
-        # generate unique slug
-        for _ in range(10):
-            slug = generate_slug()
-            if slug not in funnels:
-                break
-        else:
-            await send_message(chat_id, "Failed to generate slug.")
-            return {"ok": True}
-
-        redirect = generate_redirect()
-        await save_funnel(slug, redirect, link)
-
-        # Send backup to channel
-        await send_to_channel(f"{slug}|{redirect}|{link}")
-
-        await send_message(chat_id, f"User URL:\n{BASE_URL}/{slug}")
-        await send_message(chat_id, f"Redirect URL:\n{BASE_URL}/{redirect}/{slug}")
-
-    return {"ok": True}
-
-
