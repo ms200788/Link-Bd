@@ -307,7 +307,7 @@ function checkUnlock() {{
 <button class="btn" onclick="verifyNow()">𝗩𝗲𝗿𝗶𝗳𝘆 𝗡𝗼𝘄</button>
 </div>
 <div id="continueBox" style="display:none; margin:16px;">
-<a href="{BASE_URL}/{redirect}/{slug}">
+<a href="{BASE_URL}/k/{redirect}/{slug}">
 <button class="btn">Continue</button>
 </a>
 </div>
@@ -316,7 +316,7 @@ function checkUnlock() {{
 """
 
 # ================= REDIRECT =================
-@app.get("/r/{redirect}/{slug}")
+@app.get("/k/{redirect}/{slug}")
 async def redirect_page(redirect: str, slug: str):
     funnel = await get_by_redirect(redirect, slug)
     if not funnel:
