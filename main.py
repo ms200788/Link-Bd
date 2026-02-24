@@ -149,7 +149,7 @@ async def webhook(req: Request):
         await send_to_channel(f"{slug}|{redirect}|{link}")
 
         await send_message(chat_id, f"User URL:\n{BASE_URL}/u/{slug}")
-        await send_message(chat_id, f"Redirect URL:\n{BASE_URL}/r/{redirect}/{slug}")
+        await send_message(chat_id, f"Redirect URL:\n{BASE_URL}/k/{redirect}/{slug}")
 
     return {"ok": True}
 
